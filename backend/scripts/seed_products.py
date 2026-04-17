@@ -131,7 +131,7 @@ PRODUCTS = [
         "subcategory": "arcane",
         "series": "Arcane",
         "product_number": "1601",
-        "price": Decimal("950.00"),
+        "price": Decimal("850.00"),
         "short_description": "Фігурка Vi із серії Arcane.",
         "rarity": "regular",
         "availability_status": "in_stock",
@@ -152,50 +152,99 @@ PRODUCTS = [
 ]
 
 
+def update_product_fields(product: Product, item: dict) -> None:
+    product.name = item["name"]
+    product.category = item["category"]
+    product.subcategory = item["subcategory"]
+    product.series = item["series"]
+    product.product_number = item["product_number"]
+    product.price = item["price"]
+    product.short_description = item["short_description"]
+    product.rarity = item["rarity"]
+    product.availability_status = item["availability_status"]
+    product.delivery_eta = item["delivery_eta"]
+    product.stock_quantity = item["stock_quantity"]
+    product.is_new = item["is_new"]
+    product.is_active = item["is_active"]
+
+
+def sync_product_images(db, product: Product, image_urls: list[str]) -> None:
+    existing_images = list(product.images)
+
+    for image in existing_images:
+        db.delete(image)
+
+    db.flush()
+
+    for index, image_url in enumerate(image_urls):
+        db.add(
+            ProductImage(
+                product_id=product.id,
+                image_url=image_url,
+                sort_order=index,
+            )
+        )
+
+
+def sync_product_aliases(db, product: Product, aliases: list[str]) -> None:
+    existing_aliases = list(product.aliases)
+
+    for alias in existing_aliases:
+        db.delete(alias)
+
+    db.flush()
+
+    for alias_value in aliases:
+        db.add(
+            ProductAlias(
+                product_id=product.id,
+                alias=alias_value,
+            )
+        )
+
+
 def seed():
     db = SessionLocal()
 
     try:
         for item in PRODUCTS:
-            existing = db.scalar(select(Product).where(Product.slug == item["slug"]))
-            if existing:
-                continue
-
-            product = Product(
-                name=item["name"],
-                slug=item["slug"],
-                category=item["category"],
-                subcategory=item["subcategory"],
-                series=item["series"],
-                product_number=item["product_number"],
-                price=item["price"],
-                short_description=item["short_description"],
-                rarity=item["rarity"],
-                availability_status=item["availability_status"],
-                delivery_eta=item["delivery_eta"],
-                stock_quantity=item["stock_quantity"],
-                is_new=item["is_new"],
-                is_active=item["is_active"],
+            existing = db.scalar(
+                select(Product).where(Product.slug == item["slug"])
             )
-            db.add(product)
-            db.flush()
 
-            for index, image_url in enumerate(item["images"]):
-                db.add(
-                    ProductImage(
-                        product_id=product.id,
-                        image_url=image_url,
-                        sort_order=index,
-                    )
-                )
+            if existing:
+                update_product_fields(existing, item)
+                db.add(existing)
+                db.flush()
 
-            for alias in item["aliases"]:
-                db.add(
-                    ProductAlias(
-                        product_id=product.id,
-                        alias=alias,
-                    )
+                sync_product_images(db, existing, item["images"])
+                sync_product_aliases(db, existing, item["aliases"])
+
+                print(f"Updated: {existing.slug}")
+            else:
+                product = Product(
+                    name=item["name"],
+                    slug=item["slug"],
+                    category=item["category"],
+                    subcategory=item["subcategory"],
+                    series=item["series"],
+                    product_number=item["product_number"],
+                    price=item["price"],
+                    short_description=item["short_description"],
+                    rarity=item["rarity"],
+                    availability_status=item["availability_status"],
+                    delivery_eta=item["delivery_eta"],
+                    stock_quantity=item["stock_quantity"],
+                    is_new=item["is_new"],
+                    is_active=item["is_active"],
                 )
+                db.add(product)
+                db.flush()
+
+                sync_product_images(db, product, item["images"])
+                sync_product_aliases(db, product, item["aliases"])
+
+                print(f"Created: {product.slug}")
 
         db.commit()
         print("Products seeded successfully.")
