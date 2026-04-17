@@ -493,14 +493,6 @@ a {
 .product-badge-damaged {
   top: 14px;
   background: #ef4444;
-  color: #ffffff;
-  padding: 8px 14px;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 800;
-  z-index: 2;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
-  white-space: nowrap;
   right: 16px;
 }
 
@@ -650,7 +642,35 @@ a {
   color: #2e1065;
 }
 
-.product-badge-discount {
-  right: 16px;
+.product-card-badge-damaged {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: #ef4444;
+  color: #ffffff;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+  z-index: 2;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+  white-space: nowrap;
+  width: fit-content;
+  max-width: calc(100% - 28px);
+}
+
+.product-card-badge-discount {
+  position: absolute;
+  top: 60px;
+  right: 14px;
   background: #22c55e;
+  color: #ffffff;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+  z-index: 2;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+  white-space: nowrap;
+  width: fit-content;
 }

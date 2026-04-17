@@ -47,13 +47,13 @@ export default function ProductCard({ product }: Props) {
         )}
 
         {variant.is_box_damaged && (
-          <div className="product-badge product-badge-damaged">
+          <div className="product-card-badge-damaged product-badge-always">
             Пошкоджена коробка
           </div>
         )}
 
         {discount && (
-          <div className="product-badge product-badge-discount product-badge-always">
+          <div className="product-card-badge-discount product-badge-always">
             -{discount}%
           </div>
         )}
