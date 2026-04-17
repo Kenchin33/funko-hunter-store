@@ -6,7 +6,9 @@ interface Props {
 }
 
 export default function ProductCard({ product }: Props) {
-  const variant = product.variants.find(v => v.is_active);
+  const variant =
+  product.variants.find((v) => v.is_active) ??
+  product.variants[0];
 
   if (!variant) return null;
 
@@ -22,19 +24,36 @@ export default function ProductCard({ product }: Props) {
       ? Math.round(((oldPrice - price) / oldPrice) * 100)
       : null;
 
+  function handleBuyClick(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    console.log("Додати в кошик:", {
+      productId: product.id,
+      variantId: variant.id,
+      slug: variant.slug,
+      name: product.name,
+      price,
+    });
+  }
+
   return (
     <Link to={`/product/${variant.slug}`} className="product-card">
       <div className="product-card-image-wrap">
-        {image && <img src={image} className="product-card-image" />}
+        {image ? (
+          <img src={image} alt={product.name} className="product-card-image" />
+        ) : (
+          <div className="product-card-image-placeholder">No image</div>
+        )}
 
         {variant.is_box_damaged && (
-          <div className="product-badge product-badge-damaged">
+          <div className="product-badge product-badge-damaged product-badge-always">
             Пошкоджена коробка
           </div>
         )}
 
         {discount && (
-          <div className="product-badge product-badge-discount">
+          <div className="product-badge product-badge-discount product-badge-always">
             -{discount}%
           </div>
         )}
@@ -42,14 +61,22 @@ export default function ProductCard({ product }: Props) {
 
       <div className="product-card-body">
         <p className="product-card-series">{product.series}</p>
-        <h3>{product.name}</h3>
+        <h3 className="product-card-title">{product.name}</h3>
 
         <div className="product-card-price-wrap">
-          {oldPrice && (
-            <span className="old-price">{oldPrice} грн</span>
-          )}
+          {oldPrice && <span className="old-price">{oldPrice} грн</span>}
           <span className="price">{price} грн</span>
         </div>
+
+        <div className="product-card-status">
+          {variant.availability_status === "in_stock"
+            ? "В наявності"
+            : "Передзамовлення"}
+        </div>
+
+        <button className="product-buy-btn" onClick={handleBuyClick}>
+          Купити
+        </button>
       </div>
     </Link>
   );
