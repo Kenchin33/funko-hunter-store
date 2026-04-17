@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import type { Product } from "../types/product";
 
 interface ProductCardProps {
@@ -8,7 +9,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const image = product.images[0]?.image_url;
 
   return (
-    <div className="product-card">
+    <Link to={`/product/${product.slug}`} className="product-card">
       <div className="product-card-image-wrap">
         {image ? (
           <img src={image} alt={product.name} className="product-card-image" />
@@ -28,6 +29,6 @@ export default function ProductCard({ product }: ProductCardProps) {
             : "Передзамовлення"}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

@@ -1,12 +1,10 @@
-import bannerImage from "../assets/banner.jpg";
-
 export default function HomeBanner() {
   return (
     <section className="home-banner">
       <div
         className="home-banner-overlay"
         style={{
-          backgroundImage: `linear-gradient(135deg, rgba(76, 29, 149, 0.82), rgba(124, 58, 237, 0.7)), url(${bannerImage})`,
+          backgroundImage: `linear-gradient(135deg, rgba(76, 29, 149, 0.82), rgba(124, 58, 237, 0.05)), url(/banner.jpg)`,
         }}
       >
         <div className="home-banner-content">

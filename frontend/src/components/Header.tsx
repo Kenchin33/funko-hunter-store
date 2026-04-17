@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import logo from "../assets/logo.png";
 
 const menuItems = [
   {
@@ -36,9 +35,9 @@ export default function Header() {
   return (
     <header className="store-header">
       <div className="store-header-top">
-        <Link to="/" className="store-logo">
-          <img src={logo} alt="Funko Hunter" className="store-logo-image" />
-        </Link>
+      <Link to="/" className="store-logo">
+        <img src="/logo.png" alt="Funko Hunter" className="store-logo-image" />
+      </Link>
 
         <nav className="store-nav">
           {menuItems.map((item) => (

@@ -19,3 +19,8 @@ export async function getPreorderProducts(): Promise<Product[]> {
   const response = await api.get<Product[]>("/products/preorder");
   return response.data;
 }
+
+export async function getProductBySlug(slug: string): Promise<Product> {
+  const response = await api.get<Product>(`/products/${slug}`);
+  return response.data;
+}
