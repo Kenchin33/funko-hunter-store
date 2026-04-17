@@ -45,3 +45,9 @@ class Product(Base):
         cascade="all, delete-orphan",
         order_by="ProductImage.sort_order",
     )
+
+    aliases = relationship(
+        "ProductAlias",
+        back_populates="product",
+        cascade="all, delete-orphan",
+    )

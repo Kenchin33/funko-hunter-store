@@ -12,6 +12,13 @@ class ProductImageRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class ProductAliasRead(BaseModel):
+    id: int
+    alias: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class ProductRead(BaseModel):
     id: int
     name: str
@@ -31,5 +38,6 @@ class ProductRead(BaseModel):
     created_at: datetime
     updated_at: datetime
     images: list[ProductImageRead] = []
+    aliases: list[ProductAliasRead] = []
 
     model_config = ConfigDict(from_attributes=True)
