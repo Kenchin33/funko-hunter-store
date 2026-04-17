@@ -123,7 +123,6 @@ export default function ProductPage() {
 
             <h1>{product.name}</h1>
 
-            <p className="product-variant-name">{activeVariant.variant_name}</p>
 
             <div className="product-price-wrap">
               {compareAtPrice && (

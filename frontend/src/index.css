@@ -491,9 +491,7 @@ a {
 }
 
 .product-badge-damaged {
-  position: right;
   top: 14px;
-  right: 14px;
   background: #ef4444;
   color: #ffffff;
   padding: 8px 14px;
@@ -502,12 +500,8 @@ a {
   font-weight: 800;
   z-index: 2;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: auto;
-  max-width: max-content;
   white-space: nowrap;
+  right: 16px;
 }
 
 .product-badge-discount {

@@ -47,7 +47,7 @@ export default function ProductCard({ product }: Props) {
         )}
 
         {variant.is_box_damaged && (
-          <div className="product-badge product-badge-damaged product-badge-always">
+          <div className="product-badge product-badge-damaged">
             Пошкоджена коробка
           </div>
         )}
@@ -68,10 +68,16 @@ export default function ProductCard({ product }: Props) {
           <span className="price">{price} грн</span>
         </div>
 
-        <div className="product-card-status">
+        <div
+          className={`product-card-status ${
+            variant.availability_status === "in_stock"
+              ? "status-in-stock"
+              : "status-preorder"
+          }`}
+        >
           {variant.availability_status === "in_stock"
             ? "В наявності"
-            : "Передзамовлення"}
+          : "Передзамовлення"}
         </div>
 
         <button className="product-buy-btn" onClick={handleBuyClick}>
