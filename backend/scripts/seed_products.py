@@ -1,11 +1,13 @@
 from decimal import Decimal
 
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
 from app.core.database import SessionLocal
 from app.models.product import Product
 from app.models.product_alias import ProductAlias
 from app.models.product_image import ProductImage
+from app.models.product_variant import ProductVariant
 
 
 PRODUCTS = [
@@ -16,12 +18,8 @@ PRODUCTS = [
         "subcategory": "one-piece",
         "series": "One Piece",
         "product_number": "2107",
-        "price": Decimal("1250.00"),
         "short_description": "Фігурка Funko Pop Usopp із серії One Piece з постером розшуку.",
         "rarity": "exclusive",
-        "availability_status": "in_stock",
-        "delivery_eta": None,
-        "stock_quantity": 3,
         "is_new": True,
         "is_active": True,
         "images": [
@@ -40,20 +38,29 @@ PRODUCTS = [
             "usopp poster",
             "usopp one piece",
         ],
+        "variants": [
+            {
+                "slug": "funko-pop-usopp-wanted-2107",
+                "variant_name": "Стандартна коробка",
+                "price": Decimal("1250.00"),
+                "compare_at_price": None,
+                "availability_status": "in_stock",
+                "delivery_eta": None,
+                "stock_quantity": 3,
+                "is_box_damaged": False,
+                "is_active": True,
+            }
+        ],
     },
     {
-        "name": "Funko Pop! Tony Stark/Iron Man 1569",
+       "name": "Funko Pop! Tony Stark/Iron Man 1569",
         "slug": "funko-pop-tony-stark-iron-man-1569",
         "category": "heroes",
         "subcategory": "marvel",
         "series": "Marvel",
         "product_number": "1569",
-        "price": Decimal("1050.00"),
         "short_description": "Фігурка Funko Pop Tony Stark із серії Marvel.",
         "rarity": "exclusive",
-        "availability_status": "preorder",
-        "delivery_eta": "4 тижні",
-        "stock_quantity": 0,
         "is_new": True,
         "is_active": True,
         "images": [
@@ -69,6 +76,19 @@ PRODUCTS = [
             "залізної людини",
             "iron man",
         ],
+        "variants": [
+            {
+                "slug": "funko-pop-tony-stark-iron-man-1569",
+                "variant_name": "Стандартна коробка",
+                "price": Decimal("1050.00"),
+                "compare_at_price": None,
+                "availability_status": "preorder",
+                "delivery_eta": "2-3 тижні",
+                "stock_quantity": 0,
+                "is_box_damaged": False,
+                "is_active": True,
+            }
+        ],
     },
     {
         "name": "Funko Pop! Joel Miller 1845",
@@ -77,12 +97,8 @@ PRODUCTS = [
         "subcategory": "the-last-of-us",
         "series": "The Last of Us",
         "product_number": "1845",
-        "price": Decimal("950.00"),
         "short_description": "Фігурка Funko Pop Joel Miller із серії The Last of Us.",
         "rarity": "regular",
-        "availability_status": "in_stock",
-        "delivery_eta": None,
-        "stock_quantity": 5,
         "is_new": True,
         "is_active": True,
         "images": [
@@ -97,6 +113,19 @@ PRODUCTS = [
             "джоеля міллера",
             "joel miller",
         ],
+        "variants": [
+            {
+                "slug": "funko-pop-joel-miller-1845",
+                "variant_name": "Стандартна коробка",
+                "price": Decimal("950.00"),
+                "compare_at_price": None,
+                "availability_status": "in_stock",
+                "delivery_eta": None,
+                "stock_quantity": 5,
+                "is_box_damaged": False,
+                "is_active": True,
+            },
+        ],
     },
     {
         "name": "Funko Pop! Naked Snake (Big Boss) 1159",
@@ -105,12 +134,8 @@ PRODUCTS = [
         "subcategory": "metal-gear-solid",
         "series": "Metal Gear Solid",
         "product_number": "1159",
-        "price": Decimal("1050.00"),
         "short_description": "Фігурка Funko Pop Naked Snake із серії Metal Gear Solid.",
         "rarity": "exclusive",
-        "availability_status": "in_stock",
-        "delivery_eta": None,
-        "stock_quantity": 4,
         "is_new": False,
         "is_active": True,
         "images": [
@@ -123,6 +148,19 @@ PRODUCTS = [
             "snake",
             "naked snake",
         ],
+        "variants": [
+            {
+                "slug": "funko-pop-naked-snake-big-boss-1159",
+                "variant_name": "Стандартна коробка",
+                "price": Decimal("1050.00"),
+                "compare_at_price": None,
+                "availability_status": "in_stock",
+                "delivery_eta": None,
+                "stock_quantity": 5,
+                "is_box_damaged": False,
+                "is_active": True,
+            },
+        ],
     },
     {
         "name": "Funko Pop! Vi 1601",
@@ -131,12 +169,8 @@ PRODUCTS = [
         "subcategory": "arcane",
         "series": "Arcane",
         "product_number": "1601",
-        "price": Decimal("850.00"),
         "short_description": "Фігурка Vi із серії Arcane.",
         "rarity": "regular",
-        "availability_status": "in_stock",
-        "delivery_eta": None,
-        "stock_quantity": 2,
         "is_new": False,
         "is_active": True,
         "images": [
@@ -148,32 +182,50 @@ PRODUCTS = [
             "ві",
             "vi",
         ],
+        "variants": [
+            {
+                "slug": "funko-pop-vi-1601",
+                "variant_name": "Стандартна коробка",
+                "price": Decimal("950.00"),
+                "compare_at_price": None,
+                "availability_status": "in_stock",
+                "delivery_eta": None,
+                "stock_quantity": 3,
+                "is_box_damaged": False,
+                "is_active": True,
+            },
+            {
+                "slug": "funko-pop-vi-1601-damaged-box",
+                "variant_name": "Пошкоджена коробка",
+                "price": Decimal("820.00"),
+                "compare_at_price": Decimal("950.00"),
+                "availability_status": "in_stock",
+                "delivery_eta": None,
+                "stock_quantity": 1,
+                "is_box_damaged": True,
+                "is_active": True,
+            },
+        ],
     },
 ]
 
 
 def update_product_fields(product: Product, item: dict) -> None:
     product.name = item["name"]
+    product.slug = item["slug"]
     product.category = item["category"]
     product.subcategory = item["subcategory"]
     product.series = item["series"]
     product.product_number = item["product_number"]
-    product.price = item["price"]
     product.short_description = item["short_description"]
     product.rarity = item["rarity"]
-    product.availability_status = item["availability_status"]
-    product.delivery_eta = item["delivery_eta"]
-    product.stock_quantity = item["stock_quantity"]
     product.is_new = item["is_new"]
     product.is_active = item["is_active"]
 
 
 def sync_product_images(db, product: Product, image_urls: list[str]) -> None:
-    existing_images = list(product.images)
-
-    for image in existing_images:
+    for image in list(product.images):
         db.delete(image)
-
     db.flush()
 
     for index, image_url in enumerate(image_urls):
@@ -187,18 +239,32 @@ def sync_product_images(db, product: Product, image_urls: list[str]) -> None:
 
 
 def sync_product_aliases(db, product: Product, aliases: list[str]) -> None:
-    existing_aliases = list(product.aliases)
-
-    for alias in existing_aliases:
+    for alias in list(product.aliases):
         db.delete(alias)
-
     db.flush()
 
     for alias_value in aliases:
+        db.add(ProductAlias(product_id=product.id, alias=alias_value))
+
+
+def sync_product_variants(db, product: Product, variants: list[dict]) -> None:
+    for variant in list(product.variants):
+        db.delete(variant)
+    db.flush()
+
+    for item in variants:
         db.add(
-            ProductAlias(
+            ProductVariant(
                 product_id=product.id,
-                alias=alias_value,
+                slug=item["slug"],
+                variant_name=item["variant_name"],
+                price=item["price"],
+                compare_at_price=item["compare_at_price"],
+                availability_status=item["availability_status"],
+                delivery_eta=item["delivery_eta"],
+                stock_quantity=item["stock_quantity"],
+                is_box_damaged=item["is_box_damaged"],
+                is_active=item["is_active"],
             )
         )
 
@@ -209,7 +275,13 @@ def seed():
     try:
         for item in PRODUCTS:
             existing = db.scalar(
-                select(Product).where(Product.slug == item["slug"])
+                select(Product)
+                .options(
+                    selectinload(Product.images),
+                    selectinload(Product.aliases),
+                    selectinload(Product.variants),
+                )
+                .where(Product.slug == item["slug"])
             )
 
             if existing:
@@ -219,6 +291,7 @@ def seed():
 
                 sync_product_images(db, existing, item["images"])
                 sync_product_aliases(db, existing, item["aliases"])
+                sync_product_variants(db, existing, item["variants"])
 
                 print(f"Updated: {existing.slug}")
             else:
@@ -229,12 +302,8 @@ def seed():
                     subcategory=item["subcategory"],
                     series=item["series"],
                     product_number=item["product_number"],
-                    price=item["price"],
                     short_description=item["short_description"],
                     rarity=item["rarity"],
-                    availability_status=item["availability_status"],
-                    delivery_eta=item["delivery_eta"],
-                    stock_quantity=item["stock_quantity"],
                     is_new=item["is_new"],
                     is_active=item["is_active"],
                 )
@@ -243,6 +312,7 @@ def seed():
 
                 sync_product_images(db, product, item["images"])
                 sync_product_aliases(db, product, item["aliases"])
+                sync_product_variants(db, product, item["variants"])
 
                 print(f"Created: {product.slug}")
 

@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session, selectinload
 
 from app.models.product import Product
 from app.models.product_alias import ProductAlias
+from app.models.product_variant import ProductVariant
 
 
 class ProductService:
@@ -13,6 +14,7 @@ class ProductService:
             .options(
                 selectinload(Product.images),
                 selectinload(Product.aliases),
+                selectinload(Product.variants),
             )
             .where(Product.is_active.is_(True))
             .order_by(Product.created_at.desc(), Product.id.desc())
@@ -20,14 +22,20 @@ class ProductService:
         return list(db.scalars(stmt).all())
 
     @staticmethod
-    def get_by_slug(db: Session, slug: str) -> Product | None:
+    def get_by_variant_slug(db: Session, slug: str) -> Product | None:
         stmt = (
             select(Product)
+            .join(ProductVariant, ProductVariant.product_id == Product.id)
             .options(
                 selectinload(Product.images),
                 selectinload(Product.aliases),
+                selectinload(Product.variants),
             )
-            .where(Product.slug == slug, Product.is_active.is_(True))
+            .where(
+                Product.is_active.is_(True),
+                ProductVariant.slug == slug,
+                ProductVariant.is_active.is_(True),
+            )
         )
         return db.scalar(stmt)
 
@@ -38,6 +46,7 @@ class ProductService:
             .options(
                 selectinload(Product.images),
                 selectinload(Product.aliases),
+                selectinload(Product.variants),
             )
             .where(Product.is_new.is_(True), Product.is_active.is_(True))
             .order_by(Product.created_at.desc(), Product.id.desc())
@@ -48,15 +57,19 @@ class ProductService:
     def get_preorder_products(db: Session) -> list[Product]:
         stmt = (
             select(Product)
+            .join(ProductVariant, ProductVariant.product_id == Product.id)
             .options(
                 selectinload(Product.images),
                 selectinload(Product.aliases),
+                selectinload(Product.variants),
             )
             .where(
-                Product.availability_status == "preorder",
                 Product.is_active.is_(True),
+                ProductVariant.is_active.is_(True),
+                ProductVariant.availability_status == "preorder",
             )
             .order_by(Product.created_at.desc(), Product.id.desc())
+            .distinct()
         )
         return list(db.scalars(stmt).all())
 
@@ -72,9 +85,11 @@ class ProductService:
             select(Product)
             .distinct()
             .outerjoin(ProductAlias, ProductAlias.product_id == Product.id)
+            .outerjoin(ProductVariant, ProductVariant.product_id == Product.id)
             .options(
                 selectinload(Product.images),
                 selectinload(Product.aliases),
+                selectinload(Product.variants),
             )
             .where(
                 Product.is_active.is_(True),
@@ -85,6 +100,8 @@ class ProductService:
                     Product.category.ilike(ilike_query),
                     Product.subcategory.ilike(ilike_query),
                     ProductAlias.alias.ilike(ilike_query),
+                    ProductVariant.slug.ilike(ilike_query),
+                    ProductVariant.variant_name.ilike(ilike_query),
                 ),
             )
             .order_by(Product.created_at.desc(), Product.id.desc())

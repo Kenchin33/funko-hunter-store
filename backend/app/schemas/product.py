@@ -19,6 +19,21 @@ class ProductAliasRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class ProductVariantRead(BaseModel):
+    id: int
+    slug: str
+    variant_name: str
+    price: Decimal
+    compare_at_price: Decimal | None = None
+    availability_status: str
+    delivery_eta: str | None = None
+    stock_quantity: int
+    is_box_damaged: bool
+    is_active: bool
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class ProductRead(BaseModel):
     id: int
     name: str
@@ -27,17 +42,14 @@ class ProductRead(BaseModel):
     subcategory: str | None = None
     series: str
     product_number: str | None = None
-    price: Decimal
     short_description: str
     rarity: str
-    availability_status: str
-    delivery_eta: str | None = None
-    stock_quantity: int
     is_new: bool
     is_active: bool
     created_at: datetime
     updated_at: datetime
     images: list[ProductImageRead] = []
     aliases: list[ProductAliasRead] = []
+    variants: list[ProductVariantRead] = []
 
     model_config = ConfigDict(from_attributes=True)

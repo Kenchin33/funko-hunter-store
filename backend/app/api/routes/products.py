@@ -33,7 +33,7 @@ def search_products(
 
 @router.get("/{slug}", response_model=ProductRead)
 def get_product_by_slug(slug: str, db: Session = Depends(get_db)):
-    product = ProductService.get_by_slug(db, slug)
+    product = ProductService.get_by_variant_slug(db, slug)
     if not product:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
