@@ -1,14 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getProductBySlug } from "../api/productApi";
-import type { Product } from "../types/product";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import type { Product, ProductVariant } from "../types/product";
 
 function getRarityLabel(rarity: string) {
   if (rarity === "exclusive") return "Ексклюзив";
   if (rarity === "limited") return "Лімітка";
   return null;
+}
+
+function calculateDiscount(price: number, compareAtPrice: number | null) {
+  if (!compareAtPrice || compareAtPrice <= price) return null;
+  return Math.round(((compareAtPrice - price) / compareAtPrice) * 100);
 }
 
 export default function ProductPage() {
@@ -23,13 +28,18 @@ export default function ProductPage() {
       try {
         const data = await getProductBySlug(slug);
         setProduct(data);
-      } catch (e) {
-        console.error("Failed to load product", e);
+      } catch (error) {
+        console.error("Failed to load product", error);
       }
     }
 
     loadProduct();
   }, [slug]);
+
+  const activeVariant: ProductVariant | undefined = useMemo(() => {
+    if (!product || !slug) return undefined;
+    return product.variants.find((variant) => variant.slug === slug);
+  }, [product, slug]);
 
   if (!product) {
     return (
@@ -43,7 +53,24 @@ export default function ProductPage() {
     );
   }
 
+  if (!activeVariant) {
+    return (
+      <div className="store-page">
+        <Header />
+        <main className="product-page">
+          <div className="admin-error-box">Варіант товару не знайдено.</div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   const rarityLabel = getRarityLabel(product.rarity);
+  const price = Number(activeVariant.price);
+  const compareAtPrice = activeVariant.compare_at_price
+    ? Number(activeVariant.compare_at_price)
+    : null;
+  const discount = calculateDiscount(price, compareAtPrice);
 
   return (
     <div className="store-page">
@@ -59,9 +86,15 @@ export default function ProductPage() {
                 </div>
               )}
 
-              {!product.is_new && (
+              {activeVariant.is_box_damaged && (
                 <div className="product-badge product-badge-damaged">
                   Пошкоджена коробка
+                </div>
+              )}
+
+              {discount && (
+                <div className="product-badge product-badge-discount">
+                  -{discount}%
                 </div>
               )}
 
@@ -90,25 +123,40 @@ export default function ProductPage() {
 
             <h1>{product.name}</h1>
 
-            <p className="product-price">{product.price} грн</p>
+            <p className="product-variant-name">{activeVariant.variant_name}</p>
+
+            <div className="product-price-wrap">
+              {compareAtPrice && (
+                <span className="old-price">{compareAtPrice} грн</span>
+              )}
+              <span className="product-price">{price} грн</span>
+            </div>
+
+            {discount && (
+              <div className="product-discount">
+                Знижка {discount}%
+              </div>
+            )}
 
             <div
               className={`product-status ${
-                product.availability_status === "in_stock"
+                activeVariant.availability_status === "in_stock"
                   ? "status-in-stock"
                   : "status-preorder"
               }`}
             >
-              {product.availability_status === "in_stock"
+              {activeVariant.availability_status === "in_stock"
                 ? "В наявності"
                 : "Передзамовлення"}
             </div>
 
-            {product.delivery_eta && (
+            {activeVariant.delivery_eta && (
               <p className="product-delivery">
-                Доставка: {product.delivery_eta}
+                Доставка: {activeVariant.delivery_eta}
               </p>
             )}
+
+            
 
             <p className="product-description">{product.short_description}</p>
 
