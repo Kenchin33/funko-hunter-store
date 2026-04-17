@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import logo from "../assets/logo.png";
 
 const menuItems = [
   {
@@ -23,7 +24,7 @@ const menuItems = [
   },
   {
     label: "Cartoons",
-    children: ["Disney", "Pixar", "Avatar The Last Airdbender", "Arcane", "Sponge Bob", "Інші"],
+    children: ["Disney", "Pixar", "Avatar the Last Airbender", "Arcane", "Sponge Bob", "Інші"],
   },
   {
     label: "Передзамовлення",
@@ -36,7 +37,7 @@ export default function Header() {
     <header className="store-header">
       <div className="store-header-top">
         <Link to="/" className="store-logo">
-          Funko Hunter
+          <img src={logo} alt="Funko Hunter" className="store-logo-image" />
         </Link>
 
         <nav className="store-nav">
