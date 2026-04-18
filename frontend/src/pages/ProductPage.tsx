@@ -23,6 +23,7 @@ export default function ProductPage() {
 
   const [product, setProduct] = useState<Product | null>(null);
   const [activeImage, setActiveImage] = useState(0);
+  const [showLimitToast, setShowLimitToast] = useState(false);
 
   useEffect(() => {
     async function loadProduct() {
@@ -56,8 +57,6 @@ export default function ProductPage() {
     );
   }
 
-  const currentProduct = product;
-
   if (!foundVariant) {
     return (
       <div className="store-page">
@@ -70,6 +69,7 @@ export default function ProductPage() {
     );
   }
 
+  const currentProduct = product;
   const activeVariant = foundVariant;
   const rarityLabel = getRarityLabel(currentProduct.rarity);
   const price = Number(activeVariant.price);
@@ -79,8 +79,15 @@ export default function ProductPage() {
   const discount = calculateDiscount(price, compareAtPrice);
   const image = currentProduct.images[0]?.image_url ?? null;
 
+  function showToast() {
+    setShowLimitToast(true);
+    window.setTimeout(() => {
+      setShowLimitToast(false);
+    }, 2500);
+  }
+
   function handleAddToCart() {
-    addToCart({
+    const added = addToCart({
       variantId: activeVariant.id,
       variantSlug: activeVariant.slug,
       productId: currentProduct.id,
@@ -93,13 +100,24 @@ export default function ProductPage() {
       isBoxDamaged: activeVariant.is_box_damaged,
       stockQuantity: activeVariant.stock_quantity,
     });
-  
+
+    if (!added) {
+      showToast();
+      return;
+    }
+
     window.dispatchEvent(new Event("cart:open"));
   }
 
   return (
     <div className="store-page">
       <Header />
+
+      {showLimitToast && (
+        <div className="cart-limit-toast">
+          У кошику вже максимальна доступна кількість цього товару.
+        </div>
+      )}
 
       <main className="product-page">
         <div className="product-page-container">

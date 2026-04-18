@@ -21,9 +21,9 @@ interface CartContextValue {
   items: CartItem[];
   totalItems: number;
   totalPrice: number;
-  addToCart: (item: AddToCartPayload) => void;
+  addToCart: (item: AddToCartPayload) => boolean;
   removeFromCart: (variantId: number) => void;
-  increaseQuantity: (variantId: number) => void;
+  increaseQuantity: (variantId: number) => boolean;
   decreaseQuantity: (variantId: number) => void;
   clearCart: () => void;
 }
@@ -38,35 +38,40 @@ function canIncrease(item: CartItem) {
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>(() => getCartFromStorage());
 
-  const addToCart = (payload: AddToCartPayload) => {
+  const addToCart = (payload: AddToCartPayload): boolean => {
+    const existing = items.find((item) => item.variantId === payload.variantId);
+
+    if (
+      existing &&
+      existing.availabilityStatus === "in_stock" &&
+      existing.quantity >= existing.stockQuantity
+    ) {
+      return false;
+    }
+
     setItems((prev) => {
-      const existing = prev.find((item) => item.variantId === payload.variantId);
+      const found = prev.find((item) => item.variantId === payload.variantId);
 
-      let next: CartItem[];
-
-      if (existing) {
-        next = prev.map((item) => {
-          if (item.variantId !== payload.variantId) return item;
-
-          if (item.availabilityStatus === "in_stock" && item.quantity >= item.stockQuantity) {
-            return item;
-          }
-
-          return { ...item, quantity: item.quantity + 1 };
-        });
-      } else {
-        next = [
-          ...prev,
-          {
-            ...payload,
-            quantity: 1,
-          },
-        ];
-      }
+      const next =
+        found
+          ? prev.map((item) =>
+              item.variantId === payload.variantId
+                ? { ...item, quantity: item.quantity + 1 }
+                : item
+            )
+          : [
+              ...prev,
+              {
+                ...payload,
+                quantity: 1,
+              },
+            ];
 
       saveCartToStorage(next);
       return next;
     });
+
+    return true;
   };
 
   const removeFromCart = (variantId: number) => {
@@ -77,21 +82,25 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const increaseQuantity = (variantId: number) => {
+  const increaseQuantity = (variantId: number): boolean => {
+    const existing = items.find((item) => item.variantId === variantId);
+
+    if (existing && !canIncrease(existing)) {
+      return false;
+    }
+
     setItems((prev) => {
-      const next = prev.map((item) => {
-        if (item.variantId !== variantId) return item;
-
-        if (!canIncrease(item)) {
-          return item;
-        }
-
-        return { ...item, quantity: item.quantity + 1 };
-      });
+      const next = prev.map((item) =>
+        item.variantId === variantId
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      );
 
       saveCartToStorage(next);
       return next;
     });
+
+    return true;
   };
 
   const decreaseQuantity = (variantId: number) => {
