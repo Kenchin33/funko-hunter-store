@@ -28,58 +28,76 @@ export default function MiniCart({ onClose }: MiniCartProps) {
       ) : (
         <>
           <div className="mini-cart-items">
-            {items.map((item) => (
-              <div key={item.variantId} className="mini-cart-item">
-                <Link
-                  to={`/product/${item.variantSlug}`}
-                  className="mini-cart-item-image-wrap"
-                  onClick={onClose}
-                >
-                  {item.imageUrl ? (
-                    <img
-                      src={item.imageUrl}
-                      alt={item.productName}
-                      className="mini-cart-item-image"
-                    />
-                  ) : (
-                    <div className="mini-cart-item-image-placeholder">No image</div>
-                  )}
-                </Link>
+            {items.map((item) => {
+              const maxReached =
+                item.availabilityStatus === "in_stock" &&
+                item.quantity >= item.stockQuantity;
 
-                <div className="mini-cart-item-info">
+              return (
+                <div key={item.variantId} className="mini-cart-item">
                   <Link
                     to={`/product/${item.variantSlug}`}
-                    className="mini-cart-item-title"
+                    className="mini-cart-item-image-wrap"
                     onClick={onClose}
                   >
-                    {item.productName}
+                    {item.imageUrl ? (
+                      <img
+                        src={item.imageUrl}
+                        alt={item.productName}
+                        className="mini-cart-item-image"
+                      />
+                    ) : (
+                      <div className="mini-cart-item-image-placeholder">No image</div>
+                    )}
                   </Link>
 
-                  <p className="mini-cart-item-variant">{item.variantName}</p>
+                  <div className="mini-cart-item-info">
+                    <Link
+                      to={`/product/${item.variantSlug}`}
+                      className="mini-cart-item-title"
+                      onClick={onClose}
+                    >
+                      {item.productName}
+                    </Link>
 
-                  {item.isBoxDamaged && (
-                    <div className="mini-cart-item-badge">Пошкоджена коробка</div>
-                  )}
+                    <p className="mini-cart-item-variant">{item.variantName}</p>
 
-                  <p className="mini-cart-item-price">{item.price} грн</p>
+                    {item.isBoxDamaged && (
+                      <div className="mini-cart-item-badge">Пошкоджена коробка</div>
+                    )}
 
-                  <div className="mini-cart-controls">
-                    <div className="mini-cart-quantity-controls">
-                      <button onClick={() => decreaseQuantity(item.variantId)}>-</button>
-                      <span>{item.quantity}</span>
-                      <button onClick={() => increaseQuantity(item.variantId)}>+</button>
+                    <p className="mini-cart-item-price">{item.price} грн</p>
+
+                    <div className="mini-cart-controls">
+                      <div className="mini-cart-quantity-controls">
+                        <button onClick={() => decreaseQuantity(item.variantId)}>-</button>
+                        <span>{item.quantity}</span>
+                        <button
+                          onClick={() => increaseQuantity(item.variantId)}
+                          disabled={maxReached}
+                          className={maxReached ? "cart-btn-disabled" : ""}
+                        >
+                          +
+                        </button>
+                      </div>
+
+                      <button
+                        className="mini-cart-remove-btn"
+                        onClick={() => removeFromCart(item.variantId)}
+                      >
+                        Видалити
+                      </button>
                     </div>
 
-                    <button
-                      className="mini-cart-remove-btn"
-                      onClick={() => removeFromCart(item.variantId)}
-                    >
-                      Видалити
-                    </button>
+                    {maxReached && (
+                      <p className="mini-cart-limit-note">
+                        Досягнуто максимальну доступну кількість.
+                      </p>
+                    )}
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <div className="mini-cart-footer">

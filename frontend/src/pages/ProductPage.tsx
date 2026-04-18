@@ -91,6 +91,7 @@ export default function ProductPage() {
       compareAtPrice,
       availabilityStatus: activeVariant.availability_status,
       isBoxDamaged: activeVariant.is_box_damaged,
+      stockQuantity: activeVariant.stock_quantity,
     });
   }
 

@@ -1117,3 +1117,16 @@ a {
   color: #2e1065;
   margin-bottom: 8px;
 }
+
+.cart-btn-disabled {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+}
+
+.mini-cart-limit-note,
+.cart-limit-note {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: #92400e;
+  font-weight: 600;
+}

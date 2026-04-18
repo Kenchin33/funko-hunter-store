@@ -43,6 +43,7 @@ export default function ProductCard({ product }: Props) {
       compareAtPrice: oldPrice,
       availabilityStatus: variant.availability_status,
       isBoxDamaged: variant.is_box_damaged,
+      stockQuantity: variant.stock_quantity,
     });
   }
 
