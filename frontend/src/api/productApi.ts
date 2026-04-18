@@ -31,3 +31,11 @@ export async function searchProducts(query: string): Promise<Product[]> {
   });
   return response.data;
 }
+
+export async function searchProductsLimited(query: string): Promise<Product[]> {
+  const response = await api.get<Product[]>("/products/search", {
+    params: { q: query },
+  });
+
+  return response.data.slice(0, 6);
+}
