@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MiniCart from "./MiniCart";
 import { useCart } from "../hooks/useCart";
 
@@ -37,7 +37,10 @@ const menuItems = [
 export default function Header() {
   const { totalItems } = useCart();
   const [cartOpen, setCartOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+
   const cartRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -64,6 +67,15 @@ export default function Header() {
       window.removeEventListener("cart:open", handleOpenCart);
     };
   }, []);
+
+  function handleSearchSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    const trimmed = searchValue.trim();
+    if (!trimmed) return;
+
+    navigate(`/search?q=${encodeURIComponent(trimmed)}`);
+  }
 
   return (
     <header className="store-header">
@@ -99,11 +111,15 @@ export default function Header() {
         </nav>
 
         <div className="store-header-actions">
-          <input
-            type="text"
-            placeholder="Пошук фігурок..."
-            className="store-search-input"
-          />
+          <form className="store-search-form" onSubmit={handleSearchSubmit}>
+            <input
+              type="text"
+              placeholder="Пошук фігурок..."
+              className="store-search-input"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+            />
+          </form>
 
           <div className="store-cart-wrap" ref={cartRef}>
             <button

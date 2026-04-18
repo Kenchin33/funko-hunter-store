@@ -24,3 +24,10 @@ export async function getProductBySlug(slug: string): Promise<Product> {
   const response = await api.get<Product>(`/products/${slug}`);
   return response.data;
 }
+
+export async function searchProducts(query: string): Promise<Product[]> {
+  const response = await api.get<Product[]>("/products/search", {
+    params: { q: query },
+  });
+  return response.data;
+}

@@ -1347,3 +1347,36 @@ a {
   font-weight: 600;
   color: #2e1065;
 }
+
+.store-search-form {
+  display: flex;
+}
+
+.search-page {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 40px 24px 60px;
+}
+
+.search-page-header {
+  margin-bottom: 24px;
+}
+
+.search-page-header h1 {
+  margin: 0 0 10px;
+  color: #2e1065;
+}
+
+.search-page-query {
+  margin: 0;
+  color: #6b7280;
+  font-size: 18px;
+}
+
+.search-empty-box {
+  background: #ffffff;
+  border: 1px solid #ede9fe;
+  border-radius: 20px;
+  padding: 24px;
+  color: #6b7280;
+}
