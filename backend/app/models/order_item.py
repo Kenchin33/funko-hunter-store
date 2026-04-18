@@ -22,6 +22,7 @@ class OrderItem(Base):
     )
 
     product_name_snapshot: Mapped[str] = mapped_column(String(255), nullable=False)
+    image_url_snapshot: Mapped[str | None] = mapped_column(String(1000), nullable=True)
     price_snapshot: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     quantity: Mapped[int] = mapped_column(Integer, nullable=False)
 

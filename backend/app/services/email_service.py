@@ -26,7 +26,19 @@ class EmailService:
     @staticmethod
     def send_order_confirmation_to_client(order) -> None:
         items_html = "".join(
-            f"<li>{item.product_name_snapshot} — {item.quantity} × {item.price_snapshot} грн</li>"
+            f"""
+            <tr>
+                <td style="padding:10px;border-bottom:1px solid #eee;">
+                    {f'<img src="{item.image_url_snapshot}" alt="{item.product_name_snapshot}" width="70" style="border-radius:8px;display:block;" />' if item.image_url_snapshot else ''}
+                </td>
+                <td style="padding:10px;border-bottom:1px solid #eee;">
+                    {item.product_name_snapshot}
+                </td>
+                <td style="padding:10px;border-bottom:1px solid #eee;">
+                    {item.quantity} × {item.price_snapshot} грн
+                </td>
+            </tr>
+            """
             for item in order.items
         )
 
@@ -35,7 +47,9 @@ class EmailService:
         <p><strong>Номер замовлення:</strong> {order.order_number}</p>
         <p><strong>Адреса доставки:</strong> {order.delivery_city}, відділення {order.delivery_branch}</p>
         <p><strong>Склад замовлення:</strong></p>
-        <ul>{items_html}</ul>
+        <table style="border-collapse:collapse;width:100%;">
+            {items_html}
+        </table>
         <p><strong>Сума:</strong> {order.total_amount} грн</p>
         <p>Дякуємо за замовлення у Funko Hunter!</p>
         """
@@ -49,7 +63,19 @@ class EmailService:
     @staticmethod
     def send_order_notification_to_admin(order) -> None:
         items_html = "".join(
-            f"<li>{item.product_name_snapshot} — {item.quantity} × {item.price_snapshot} грн</li>"
+            f"""
+            <tr>
+                <td style="padding:10px;border-bottom:1px solid #eee;">
+                    {f'<img src="{item.image_url_snapshot}" alt="{item.product_name_snapshot}" width="70" style="border-radius:8px;display:block;" />' if item.image_url_snapshot else ''}
+                </td>
+                <td style="padding:10px;border-bottom:1px solid #eee;">
+                    {item.product_name_snapshot}
+                </td>
+                <td style="padding:10px;border-bottom:1px solid #eee;">
+                    {item.quantity} × {item.price_snapshot} грн
+                </td>
+            </tr>
+            """
             for item in order.items
         )
 
@@ -61,12 +87,30 @@ class EmailService:
         <p><strong>Телефон:</strong> {order.customer_phone}</p>
         <p><strong>Доставка:</strong> {order.delivery_city}, відділення {order.delivery_branch}</p>
         <p><strong>Склад замовлення:</strong></p>
-        <ul>{items_html}</ul>
+        <table style="border-collapse:collapse;width:100%;">
+            {items_html}
+        </table>
         <p><strong>Сума:</strong> {order.total_amount} грн</p>
         """
 
         EmailService._send_email(
             subject=f"Нове замовлення {order.order_number}",
+            to_email=settings.ADMIN_EMAIL,
+            html_body=html,
+        )
+    
+    @staticmethod
+    def send_out_of_stock_notification_to_admin(variant) -> None:
+        html = f"""
+        <h2>Товар закінчився</h2>
+        <p><strong>Variant ID:</strong> {variant.id}</p>
+        <p><strong>Slug:</strong> {variant.slug}</p>
+        <p><strong>Назва варіанту:</strong> {variant.variant_name}</p>
+        <p>Цей варіант більше не відображається на сайті, бо залишок дорівнює 0.</p>
+        """
+
+        EmailService._send_email(
+            subject=f"Товар закінчився: {variant.slug}",
             to_email=settings.ADMIN_EMAIL,
             html_body=html,
         )

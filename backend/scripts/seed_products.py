@@ -38,7 +38,7 @@ PRODUCTS = [
                 "compare_at_price": None,
                 "availability_status": "in_stock",
                 "delivery_eta": None,
-                "stock_quantity": 0,
+                "stock_quantity": 2,
                 "is_box_damaged": False,
                 "is_active": False,
             },

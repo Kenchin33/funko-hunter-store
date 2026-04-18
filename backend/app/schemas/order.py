@@ -27,6 +27,7 @@ class OrderItemRead(BaseModel):
     id: int
     product_id: int
     product_name_snapshot: str
+    image_url_snapshot: str | None = None
     price_snapshot: Decimal
     quantity: int
 
