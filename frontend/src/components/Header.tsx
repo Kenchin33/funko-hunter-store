@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useCart } from "../hooks/useCart";
 
 const menuItems = [
   {
@@ -32,12 +33,14 @@ const menuItems = [
 ];
 
 export default function Header() {
+  const { totalItems } = useCart();
+
   return (
     <header className="store-header">
       <div className="store-header-top">
-      <Link to="/" className="store-logo">
-        <img src="/logo.png" alt="Funko Hunter" className="store-logo-image" />
-      </Link>
+        <Link to="/" className="store-logo">
+          <img src="/logo.png" alt="Funko Hunter" className="store-logo-image" />
+        </Link>
 
         <nav className="store-nav">
           {menuItems.map((item) => (
@@ -72,9 +75,12 @@ export default function Header() {
             className="store-search-input"
           />
 
-          <button className="store-icon-btn" aria-label="Кошик">
+          <Link to="/cart" className="store-icon-btn store-cart-btn" aria-label="Кошик">
             🛒
-          </button>
+            {totalItems > 0 && (
+              <span className="store-cart-count">{totalItems}</span>
+            )}
+          </Link>
 
           <button className="store-icon-btn" aria-label="Акаунт">
             👤

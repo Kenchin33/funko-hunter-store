@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getProductBySlug } from "../api/productApi";
+import { useCart } from "../hooks/useCart";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import type { Product, ProductVariant } from "../types/product";
+import type { Product } from "../types/product";
 
 function getRarityLabel(rarity: string) {
   if (rarity === "exclusive") return "Ексклюзив";
@@ -18,6 +19,8 @@ function calculateDiscount(price: number, compareAtPrice: number | null) {
 
 export default function ProductPage() {
   const { slug } = useParams();
+  const { addToCart } = useCart();
+
   const [product, setProduct] = useState<Product | null>(null);
   const [activeImage, setActiveImage] = useState(0);
 
@@ -36,7 +39,7 @@ export default function ProductPage() {
     loadProduct();
   }, [slug]);
 
-  const activeVariant: ProductVariant | undefined = useMemo(() => {
+  const foundVariant = useMemo(() => {
     if (!product || !slug) return undefined;
     return product.variants.find((variant) => variant.slug === slug);
   }, [product, slug]);
@@ -53,7 +56,9 @@ export default function ProductPage() {
     );
   }
 
-  if (!activeVariant) {
+  const currentProduct = product;
+
+  if (!foundVariant) {
     return (
       <div className="store-page">
         <Header />
@@ -65,12 +70,29 @@ export default function ProductPage() {
     );
   }
 
-  const rarityLabel = getRarityLabel(product.rarity);
+  const activeVariant = foundVariant;
+  const rarityLabel = getRarityLabel(currentProduct.rarity);
   const price = Number(activeVariant.price);
   const compareAtPrice = activeVariant.compare_at_price
     ? Number(activeVariant.compare_at_price)
     : null;
   const discount = calculateDiscount(price, compareAtPrice);
+  const image = currentProduct.images[0]?.image_url ?? null;
+
+  function handleAddToCart() {
+    addToCart({
+      variantId: activeVariant.id,
+      variantSlug: activeVariant.slug,
+      productId: currentProduct.id,
+      productName: currentProduct.name,
+      variantName: activeVariant.variant_name,
+      imageUrl: image,
+      price,
+      compareAtPrice,
+      availabilityStatus: activeVariant.availability_status,
+      isBoxDamaged: activeVariant.is_box_damaged,
+    });
+  }
 
   return (
     <div className="store-page">
@@ -81,36 +103,36 @@ export default function ProductPage() {
           <div className="product-images">
             <div className="product-main-image-wrap">
               {rarityLabel && (
-                <div className={`product-badge product-badge-rarity rarity-${product.rarity}`}>
+                <div className={`product-badge product-badge-rarity rarity-${currentProduct.rarity}`}>
                   {rarityLabel}
                 </div>
               )}
 
               {activeVariant.is_box_damaged && (
-                <div className="product-badge product-badge-damaged">
+                <div className="product-badge product-page-badge-damaged">
                   Пошкоджена коробка
                 </div>
               )}
 
               {discount && (
-                <div className="product-badge product-badge-discount">
+                <div className="product-badge product-page-badge-discount">
                   -{discount}%
                 </div>
               )}
 
               <img
-                src={product.images[activeImage]?.image_url}
-                alt={product.name}
+                src={currentProduct.images[activeImage]?.image_url}
+                alt={currentProduct.name}
                 className="product-main-image"
               />
             </div>
 
             <div className="product-thumbnails">
-              {product.images.map((img, index) => (
+              {currentProduct.images.map((img, index) => (
                 <img
                   key={img.id}
                   src={img.image_url}
-                  alt={`${product.name} ${index + 1}`}
+                  alt={`${currentProduct.name} ${index + 1}`}
                   className={`product-thumb ${index === activeImage ? "active" : ""}`}
                   onClick={() => setActiveImage(index)}
                 />
@@ -119,10 +141,11 @@ export default function ProductPage() {
           </div>
 
           <div className="product-info">
-            <p className="product-series">{product.series}</p>
+            <p className="product-series">{currentProduct.series}</p>
 
-            <h1>{product.name}</h1>
+            <h1>{currentProduct.name}</h1>
 
+            <p className="product-variant-name">{activeVariant.variant_name}</p>
 
             <div className="product-price-wrap">
               {compareAtPrice && (
@@ -131,22 +154,20 @@ export default function ProductPage() {
               <span className="product-price">{price} грн</span>
             </div>
 
-            {discount && (
-              <div className="product-discount">
-                Знижка {discount}%
-              </div>
-            )}
+            <div className="product-meta-row">
+              {discount && <div className="product-discount">Знижка {discount}%</div>}
 
-            <div
-              className={`product-status ${
-                activeVariant.availability_status === "in_stock"
-                  ? "status-in-stock"
-                  : "status-preorder"
-              }`}
-            >
-              {activeVariant.availability_status === "in_stock"
-                ? "В наявності"
-                : "Передзамовлення"}
+              <div
+                className={`product-status ${
+                  activeVariant.availability_status === "in_stock"
+                    ? "status-in-stock"
+                    : "status-preorder"
+                }`}
+              >
+                {activeVariant.availability_status === "in_stock"
+                  ? "В наявності"
+                  : "Передзамовлення"}
+              </div>
             </div>
 
             {activeVariant.delivery_eta && (
@@ -155,11 +176,17 @@ export default function ProductPage() {
               </p>
             )}
 
-            
+            {activeVariant.availability_status === "in_stock" && (
+              <p className="product-stock">
+                Кількість в наявності: {activeVariant.stock_quantity}
+              </p>
+            )}
 
-            <p className="product-description">{product.short_description}</p>
+            <p className="product-description">{currentProduct.short_description}</p>
 
-            <button className="add-to-cart-btn">Додати в кошик</button>
+            <button className="add-to-cart-btn" onClick={handleAddToCart}>
+              Додати в кошик
+            </button>
           </div>
         </div>
       </main>

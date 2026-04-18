@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useCart } from "../hooks/useCart";
 import type { Product } from "../types/product";
 
 interface Props {
@@ -6,13 +7,16 @@ interface Props {
 }
 
 export default function ProductCard({ product }: Props) {
-  const variant =
-  product.variants.find((v) => v.is_active) ??
-  product.variants[0];
+  const { addToCart } = useCart();
 
-  if (!variant) return null;
+  const foundVariant = product.variants.find((v) => v.is_active);
 
-  const image = product.images[0]?.image_url;
+  if (!foundVariant) {
+    return null;
+  }
+
+  const variant = foundVariant;
+  const image = product.images[0]?.image_url ?? null;
 
   const price = Number(variant.price);
   const oldPrice = variant.compare_at_price
@@ -28,12 +32,17 @@ export default function ProductCard({ product }: Props) {
     e.preventDefault();
     e.stopPropagation();
 
-    console.log("Додати в кошик:", {
-      productId: product.id,
+    addToCart({
       variantId: variant.id,
-      slug: variant.slug,
-      name: product.name,
+      variantSlug: variant.slug,
+      productId: product.id,
+      productName: product.name,
+      variantName: variant.variant_name,
+      imageUrl: image,
       price,
+      compareAtPrice: oldPrice,
+      availabilityStatus: variant.availability_status,
+      isBoxDamaged: variant.is_box_damaged,
     });
   }
 
@@ -77,7 +86,7 @@ export default function ProductCard({ product }: Props) {
         >
           {variant.availability_status === "in_stock"
             ? "В наявності"
-          : "Передзамовлення"}
+            : "Передзамовлення"}
         </div>
 
         <button className="product-buy-btn" onClick={handleBuyClick}>
