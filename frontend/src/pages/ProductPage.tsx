@@ -93,6 +93,8 @@ export default function ProductPage() {
       isBoxDamaged: activeVariant.is_box_damaged,
       stockQuantity: activeVariant.stock_quantity,
     });
+  
+    window.dispatchEvent(new Event("cart:open"));
   }
 
   return (
@@ -185,7 +187,11 @@ export default function ProductPage() {
 
             <p className="product-description">{currentProduct.short_description}</p>
 
-            <button className="add-to-cart-btn" onClick={handleAddToCart}>
+            <button
+              className="add-to-cart-btn"
+              onClick={handleAddToCart}
+              data-cart-action="add"
+            >
               Додати в кошик
             </button>
           </div>

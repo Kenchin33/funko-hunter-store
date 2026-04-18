@@ -41,14 +41,27 @@ export default function Header() {
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (cartRef.current && !cartRef.current.contains(event.target as Node)) {
+      const target = event.target as HTMLElement | null;
+
+      if (target?.closest("[data-cart-action='add']")) {
+        return;
+      }
+
+      if (cartRef.current && !cartRef.current.contains(target as Node)) {
         setCartOpen(false);
       }
     }
 
+    function handleOpenCart() {
+      setCartOpen(true);
+    }
+
     document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener("cart:open", handleOpenCart);
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("cart:open", handleOpenCart);
     };
   }, []);
 

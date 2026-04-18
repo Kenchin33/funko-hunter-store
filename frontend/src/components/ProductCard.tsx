@@ -45,6 +45,8 @@ export default function ProductCard({ product }: Props) {
       isBoxDamaged: variant.is_box_damaged,
       stockQuantity: variant.stock_quantity,
     });
+
+    window.dispatchEvent(new Event("cart:open"));
   }
 
   return (
@@ -90,7 +92,11 @@ export default function ProductCard({ product }: Props) {
             : "Передзамовлення"}
         </div>
 
-        <button className="product-buy-btn" onClick={handleBuyClick}>
+        <button
+          className="product-buy-btn"
+          onClick={handleBuyClick}
+          data-cart-action="add"
+        >
           Купити
         </button>
       </div>
