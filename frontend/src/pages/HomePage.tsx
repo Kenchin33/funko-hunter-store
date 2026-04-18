@@ -4,11 +4,12 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import HomeBanner from "../components/HomeBanner";
 import ProductSection from "../components/ProductSection";
-import type { Product } from "../types/product";
+import type { ProductCardItem } from "../types/productCard";
+import { mapProductsToCardItems } from "../utils/productCards";
 
 export default function HomePage() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [newProducts, setNewProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductCardItem[]>([]);
+  const [newProducts, setNewProducts] = useState<ProductCardItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,8 +20,11 @@ export default function HomePage() {
           getNewProducts(),
         ]);
 
-        setProducts(allData.slice(0, 4));
-        setNewProducts(newData.slice(0, 4));
+        const allItems = mapProductsToCardItems(allData);
+        const newItems = mapProductsToCardItems(newData);
+
+        setProducts(allItems.slice(0, 4));
+        setNewProducts(newItems.slice(0, 4));
       } catch (error) {
         console.error("Failed to load products:", error);
       } finally {
@@ -41,8 +45,8 @@ export default function HomePage() {
           <div className="store-loading">Завантаження товарів...</div>
         ) : (
           <>
-            <ProductSection title="Популярні фігурки" products={products} />
-            <ProductSection title="Новинки" products={newProducts} />
+            <ProductSection title="Популярні фігурки" items={products} />
+            <ProductSection title="Новинки" items={newProducts} />
           </>
         )}
       </main>

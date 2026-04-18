@@ -3,30 +3,32 @@ import { useSearchParams } from "react-router-dom";
 import { searchProducts } from "../api/productApi";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import ProductCard from "../components/ProductCard";
-import type { Product } from "../types/product";
+import ProductVariantCard from "../components/ProductVariantCard";
+import type { ProductCardItem } from "../types/productCard";
+import { mapProductsToCardItems } from "../utils/productCards";
 
 export default function SearchPage() {
   const [searchParams] = useSearchParams();
   const query = searchParams.get("q")?.trim() ?? "";
 
-  const [products, setProducts] = useState<Product[]>([]);
+  const [items, setItems] = useState<ProductCardItem[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function runSearch() {
       if (!query) {
-        setProducts([]);
+        setItems([]);
         return;
       }
 
       try {
         setLoading(true);
         const data = await searchProducts(query);
-        setProducts(data);
+        const mapped = mapProductsToCardItems(data);
+        setItems(mapped);
       } catch (error) {
         console.error("Search failed:", error);
-        setProducts([]);
+        setItems([]);
       } finally {
         setLoading(false);
       }
@@ -55,14 +57,17 @@ export default function SearchPage() {
           </div>
         ) : loading ? (
           <div className="store-loading">Пошук...</div>
-        ) : products.length === 0 ? (
+        ) : items.length === 0 ? (
           <div className="search-empty-box">
             За вашим запитом нічого не знайдено.
           </div>
         ) : (
           <div className="product-grid">
-            {products.map((product) => (
-              <ProductCard key={`${product.id}-${product.slug}`} product={product} />
+            {items.map((item) => (
+              <ProductVariantCard
+                key={`${item.productId}-${item.variantId}`}
+                item={item}
+              />
             ))}
           </div>
         )}

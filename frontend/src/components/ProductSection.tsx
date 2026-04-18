@@ -1,15 +1,12 @@
-import type { Product } from "../types/product";
-import ProductCard from "./ProductCard";
+import type { ProductCardItem } from "../types/productCard";
+import ProductVariantCard from "./ProductVariantCard";
 
 interface ProductSectionProps {
   title: string;
-  products: Product[];
+  items: ProductCardItem[];
 }
 
-export default function ProductSection({
-  title,
-  products,
-}: ProductSectionProps) {
+export default function ProductSection({ title, items }: ProductSectionProps) {
   return (
     <section className="product-section">
       <div className="section-header">
@@ -17,8 +14,11 @@ export default function ProductSection({
       </div>
 
       <div className="product-grid">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+        {items.map((item) => (
+          <ProductVariantCard
+            key={`${item.productId}-${item.variantId}`}
+            item={item}
+          />
         ))}
       </div>
     </section>
