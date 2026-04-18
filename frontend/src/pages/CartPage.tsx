@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { useCart } from "../hooks/useCart";
@@ -33,7 +34,10 @@ export default function CartPage() {
             <div className="cart-items">
               {items.map((item) => (
                 <div key={item.variantId} className="cart-item">
-                  <div className="cart-item-image-wrap">
+                  <Link
+                    to={`/product/${item.variantSlug}`}
+                    className="cart-item-image-wrap"
+                  >
                     {item.imageUrl ? (
                       <img
                         src={item.imageUrl}
@@ -43,10 +47,13 @@ export default function CartPage() {
                     ) : (
                       <div className="cart-item-image-placeholder">No image</div>
                     )}
-                  </div>
+                  </Link>
 
                   <div className="cart-item-info">
-                    <h3>{item.productName}</h3>
+                    <Link to={`/product/${item.variantSlug}`} className="cart-item-title">
+                      {item.productName}
+                    </Link>
+
                     <p className="cart-item-variant">{item.variantName}</p>
 
                     {item.isBoxDamaged && (

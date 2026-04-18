@@ -1,4 +1,6 @@
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import MiniCart from "./MiniCart";
 import { useCart } from "../hooks/useCart";
 
 const menuItems = [
@@ -34,6 +36,21 @@ const menuItems = [
 
 export default function Header() {
   const { totalItems } = useCart();
+  const [cartOpen, setCartOpen] = useState(false);
+  const cartRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (cartRef.current && !cartRef.current.contains(event.target as Node)) {
+        setCartOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <header className="store-header">
@@ -75,12 +92,20 @@ export default function Header() {
             className="store-search-input"
           />
 
-          <Link to="/cart" className="store-icon-btn store-cart-btn" aria-label="Кошик">
-            🛒
-            {totalItems > 0 && (
-              <span className="store-cart-count">{totalItems}</span>
-            )}
-          </Link>
+          <div className="store-cart-wrap" ref={cartRef}>
+            <button
+              className="store-icon-btn store-cart-btn"
+              aria-label="Кошик"
+              onClick={() => setCartOpen((prev) => !prev)}
+            >
+              🛒
+              {totalItems > 0 && (
+                <span className="store-cart-count">{totalItems}</span>
+              )}
+            </button>
+
+            {cartOpen && <MiniCart onClose={() => setCartOpen(false)} />}
+          </div>
 
           <button className="store-icon-btn" aria-label="Акаунт">
             👤
