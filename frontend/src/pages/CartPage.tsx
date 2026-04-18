@@ -102,7 +102,9 @@ export default function CartPage() {
             <div className="cart-summary">
               <h2>Разом</h2>
               <p>{totalPrice.toFixed(2)} грн</p>
-              <button className="cart-checkout-btn">Оформити замовлення</button>
+              <Link to="/checkout" className="cart-checkout-btn">
+                Оформити замовлення
+              </Link>
             </div>
           </div>
         )}
