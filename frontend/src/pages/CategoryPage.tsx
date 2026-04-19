@@ -65,7 +65,7 @@ export default function CategoryPage() {
           data = await getCatalogProducts(
             category,
             "other",
-            categoryConfig.knownSubcategories
+            [...categoryConfig.knownSubcategories]
           );
         } else {
           data = await getCatalogProducts(category, subcategory);

@@ -43,7 +43,7 @@ export async function searchProductsLimited(query: string): Promise<Product[]> {
 export async function getCatalogProducts(
   category: string,
   subcategory?: string,
-  excludeSubcategories?: string[]
+  excludeSubcategories?: readonly string[]
 ): Promise<Product[]> {
   const path = subcategory
     ? `/products/catalog/${category}/${subcategory}`
