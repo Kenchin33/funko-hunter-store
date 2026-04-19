@@ -1,4 +1,4 @@
-from sqlalchemy import or_, select
+from sqlalchemy import or_, not_, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.models.product import Product
@@ -125,6 +125,59 @@ class ProductService:
                     ProductAlias.alias.ilike(anywhere_query),
                 ),
             )
+            .order_by(Product.created_at.desc(), Product.id.desc())
+        )
+
+        return list(db.scalars(stmt).all())
+    
+    @staticmethod
+    def get_by_category(
+        db: Session,
+        category: str,
+        subcategory: str | None = None,
+        exclude_subcategories: list[str] | None = None,
+    ) -> list[Product]:
+        stmt = (
+            select(Product)
+            .options(
+                selectinload(Product.images),
+                selectinload(Product.aliases),
+                selectinload(Product.variants),
+            )
+            .where(
+                Product.is_active.is_(True),
+                Product.category == category,
+            )
+        )
+
+        if subcategory:
+            stmt = stmt.where(Product.subcategory == subcategory)
+
+        if exclude_subcategories:
+            stmt = stmt.where(
+                not_(Product.subcategory.in_(exclude_subcategories))
+            )
+
+        stmt = stmt.order_by(Product.created_at.desc(), Product.id.desc())
+
+        return list(db.scalars(stmt).all())
+    
+    @staticmethod
+    def get_preorder_catalog(db: Session) -> list[Product]:
+        stmt = (
+            select(Product)
+            .join(ProductVariant, ProductVariant.product_id == Product.id)
+            .options(
+                selectinload(Product.images),
+                selectinload(Product.aliases),
+                selectinload(Product.variants),
+            )
+            .where(
+                Product.is_active.is_(True),
+                ProductVariant.is_active.is_(True),
+                ProductVariant.availability_status == "preorder",
+            )
+            .distinct()
             .order_by(Product.created_at.desc(), Product.id.desc())
         )
 
