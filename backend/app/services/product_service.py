@@ -1,4 +1,4 @@
-from sqlalchemy import or_, not_, select
+from sqlalchemy import func, not_, or_, select, case
 from sqlalchemy.orm import Session, selectinload
 
 from app.models.product import Product
@@ -137,6 +137,17 @@ class ProductService:
         subcategory: str | None = None,
         exclude_subcategories: list[str] | None = None,
     ) -> list[Product]:
+        normalized_category = category.strip().lower()
+        normalized_subcategory = subcategory.strip().lower() if subcategory else None
+        normalized_excluded = (
+            [item.strip().lower() for item in exclude_subcategories]
+            if exclude_subcategories
+            else []
+        )
+
+        normalized_category_column = func.replace(func.lower(Product.category), " ", "-")
+        normalized_subcategory_column = func.replace(func.lower(Product.subcategory), " ", "-")
+
         stmt = (
             select(Product)
             .options(
@@ -146,22 +157,25 @@ class ProductService:
             )
             .where(
                 Product.is_active.is_(True),
-                Product.category == category,
+                normalized_category_column == normalized_category,
             )
         )
 
-        if subcategory:
-            stmt = stmt.where(Product.subcategory == subcategory)
+        if normalized_subcategory:
+            stmt = stmt.where(normalized_subcategory_column == normalized_subcategory)
 
-        if exclude_subcategories:
+        if normalized_excluded:
             stmt = stmt.where(
-                not_(Product.subcategory.in_(exclude_subcategories))
+                or_(
+                    Product.subcategory.is_(None),
+                    not_(normalized_subcategory_column.in_(normalized_excluded)),
+                )
             )
 
         stmt = stmt.order_by(Product.created_at.desc(), Product.id.desc())
 
         return list(db.scalars(stmt).all())
-    
+
     @staticmethod
     def get_preorder_catalog(db: Session) -> list[Product]:
         stmt = (
