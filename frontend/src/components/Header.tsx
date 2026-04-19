@@ -142,9 +142,12 @@ export default function Header() {
                 </Link>
               ) : (
                 <>
-                  <button className="store-nav-link store-nav-button">
+                  <Link
+                    to={`/catalog/${item.categoryKey}`}
+                    className="store-nav-link"
+                  >
                     {item.label}
-                  </button>
+                  </Link>
 
                   <div className="store-submenu">
                     {CATEGORY_CONFIG[item.categoryKey].subcategories.map((sub) => (

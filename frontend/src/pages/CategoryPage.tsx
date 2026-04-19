@@ -42,6 +42,7 @@ export default function CategoryPage() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [sortOption, setSortOption] = useState<SortOption>("default");
   const [openDropdown, setOpenDropdown] = useState<OpenDropdown>(null);
+  const [error, setError] = useState("");
 
   const filtersRef = useRef<HTMLDivElement | null>(null);
 
@@ -51,6 +52,8 @@ export default function CategoryPage() {
   useEffect(() => {
     async function loadCatalog() {
       if (!category) return;
+
+      setError("");
 
       try {
         setLoading(true);
@@ -75,6 +78,7 @@ export default function CategoryPage() {
       } catch (error) {
         console.error("Failed to load category page:", error);
         setItems([]);
+        setError("Не вдалося завантажити товари для цієї сторінки.");
       } finally {
         setLoading(false);
       }
@@ -210,6 +214,8 @@ export default function CategoryPage() {
 
         {loading ? (
           <div className="store-loading">Завантаження...</div>
+        ) : error ? (
+          <div className="search-empty-box">{error}</div>
         ) : filteredItems.length === 0 ? (
           <div className="search-empty-box">
             Для цієї сторінки товарів не знайдено.
