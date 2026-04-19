@@ -33,7 +33,7 @@ export const CATEGORY_CONFIG = {
         { slug: "harry-potter", label: "Harry Potter" },
         { slug: "star-wars", label: "Star Wars" },
         { slug: "lord-of-the-rings", label: "Lord of the Rings" },
-        { slug: "sopranos", label: "Sopranos" },
+        { slug: "stranger-things", label: "Stranger Things" },
         { slug: "other", label: "Інші" },
       ],
       knownSubcategories: [

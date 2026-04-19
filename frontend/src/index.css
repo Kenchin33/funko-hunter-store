@@ -181,6 +181,13 @@ a {
   color: #5b21b6;
   font-weight: 800;
   cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.home-banner-btn:hover {
+  transform: scale(1.05);
+  background: #6d28d9;
+  color: white;
 }
 
 .store-main {
@@ -390,8 +397,7 @@ a {
 .store-nav-button,
 .store-submenu-link,
 .store-footer-link,
-.store-logo,
-.home-banner-btn {
+.store-logo{
   transition: transform 0.2s ease, color 0.2s ease, opacity 0.2s ease;
 }
 
@@ -415,11 +421,6 @@ a {
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-}
-
-.home-banner-btn:hover {
-  transform: scale(1.05);
-  color: #7c3aed;
 }
 
 .store-footer-link {

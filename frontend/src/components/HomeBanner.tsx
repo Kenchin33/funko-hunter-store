@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function HomeBanner() {
   return (
     <section className="home-banner">
@@ -13,7 +15,9 @@ export default function HomeBanner() {
           <p>
             Девід, Люсі та Ребека. Передзамовляй та отримуй одним з перших улюблених героїв!
           </p>
-          <button className="home-banner-btn">Переглянути новинки</button>
+          <Link to="/catalog/anime/cyberpunk-edgerunners" className="home-banner-btn">
+            Переглянути новинки
+          </Link>
         </div>
       </div>
     </section>
