@@ -123,7 +123,7 @@ export default function Header() {
     setSearchOpen(false);
   }
 
-  const liveItems = mapProductsToCardItems(searchResults).slice(0, 6);
+  const liveItems = mapProductsToCardItems(searchResults).slice(0, 3);
 
   return (
     <header className="store-header">
