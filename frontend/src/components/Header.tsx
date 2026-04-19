@@ -6,37 +6,38 @@ import { useDebounce } from "../hooks/useDebounce";
 import type { Product } from "../types/product";
 import { mapProductsToCardItems } from "../utils/productCards";
 import MiniCart from "./MiniCart";
+import { CATEGORY_CONFIG } from "../config/catalog";
 
 const menuItems = [
   {
     label: "Новинки",
-    path: "/new",
+    path: "/catalog/new",
   },
   {
     label: "Anime",
-    children: ["One Piece", "Naruto", "Jujutsu Kaisen", "Demon Slayer", "My Hero Academia", "Chainsaw Man", "Інші"],
+    categoryKey: "anime",
   },
   {
     label: "Heroes",
-    children: ["Marvel", "DC"],
+    categoryKey: "heroes",
   },
   {
     label: "Movies",
-    children: ["Harry Potter", "Star Wars", "Lord of the Rings", "Sopranos", "Інші"],
+    categoryKey: "movies",
   },
   {
     label: "Games",
-    children: ["PlayStation", "Dota 2", "FNAF", "League of Legends", "World of Warcraft", "Інші"],
+    categoryKey: "games",
   },
   {
     label: "Cartoons",
-    children: ["Disney", "Pixar", "Avatar the Last Airbender", "Arcane", "Sponge Bob", "Інші"],
+    categoryKey: "cartoons",
   },
   {
     label: "Передзамовлення",
-    path: "/preorder",
+    path: "/catalog/preorder",
   },
-];
+] as const;
 
 export default function Header() {
   const { totalItems } = useCart();
@@ -135,7 +136,7 @@ export default function Header() {
         <nav className="store-nav">
           {menuItems.map((item) => (
             <div key={item.label} className="store-nav-item">
-              {item.path ? (
+              {"path" in item ? (
                 <Link to={item.path} className="store-nav-link">
                   {item.label}
                 </Link>
@@ -146,10 +147,14 @@ export default function Header() {
                   </button>
 
                   <div className="store-submenu">
-                    {item.children?.map((child) => (
-                      <button key={child} className="store-submenu-link">
-                        {child}
-                      </button>
+                    {CATEGORY_CONFIG[item.categoryKey].subcategories.map((sub) => (
+                      <Link
+                        key={sub.slug}
+                        to={`/catalog/${item.categoryKey}/${sub.slug}`}
+                        className="store-submenu-link"
+                      >
+                        {sub.label}
+                      </Link>
                     ))}
                   </div>
                 </>

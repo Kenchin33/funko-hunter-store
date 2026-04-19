@@ -39,3 +39,26 @@ export async function searchProductsLimited(query: string): Promise<Product[]> {
 
   return response.data.slice(0, 6);
 }
+
+export async function getCatalogProducts(
+  category: string,
+  subcategory?: string,
+  excludeSubcategories?: string[]
+): Promise<Product[]> {
+  const path = subcategory
+    ? `/products/catalog/${category}/${subcategory}`
+    : `/products/catalog/${category}`;
+
+  const response = await api.get<Product[]>(path, {
+    params: excludeSubcategories?.length
+      ? { exclude_subcategories: excludeSubcategories.join(",") }
+      : undefined,
+  });
+
+  return response.data;
+}
+
+export async function getPreorderCatalogProducts(): Promise<Product[]> {
+  const response = await api.get<Product[]>("/products/catalog/preorder");
+  return response.data;
+}

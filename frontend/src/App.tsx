@@ -5,6 +5,7 @@ import HomePage from "./pages/HomePage";
 import OrderSuccessPage from "./pages/OrderSuccessPage";
 import ProductPage from "./pages/ProductPage";
 import SearchPage from "./pages/SearchPage";
+import CategoryPage from "./pages/CategoryPage";
 
 export default function App() {
   return (
@@ -17,6 +18,8 @@ export default function App() {
         <Route path="/order-success" element={<OrderSuccessPage />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/catalog/:category" element={<CategoryPage />} />
+        <Route path="/catalog/:category/:subcategory" element={<CategoryPage />} />
       </Routes>
     </BrowserRouter>
   );
