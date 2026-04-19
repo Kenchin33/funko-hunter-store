@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   getCatalogProducts,
@@ -7,22 +7,10 @@ import {
 } from "../api/productApi";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import CatalogFilters from "../components/CatalogFilters";
-import ProductVariantCard from "../components/ProductVariantCard";
+import CatalogPageLayout from "../components/CatalogPageLayout";
 import { CATEGORY_CONFIG } from "../config/catalog";
 import type { ProductCardItem } from "../types/productCard";
 import { mapProductsToCardItems } from "../utils/productCards";
-
-type RarityFilter = "all" | "regular" | "exclusive" | "limited";
-type BoxFilter = "all" | "normal" | "damaged";
-type StatusFilter = "all" | "in_stock" | "preorder";
-type SortOption =
-  | "default"
-  | "price_asc"
-  | "price_desc"
-  | "name_asc"
-  | "name_desc";
-type OpenDropdown = null | "sort" | "rarity" | "box" | "status";
 
 function prettifySlug(slug: string) {
   return slug
@@ -36,15 +24,7 @@ export default function CategoryPage() {
 
   const [items, setItems] = useState<ProductCardItem[]>([]);
   const [loading, setLoading] = useState(false);
-
-  const [rarityFilter, setRarityFilter] = useState<RarityFilter>("all");
-  const [boxFilter, setBoxFilter] = useState<BoxFilter>("all");
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
-  const [sortOption, setSortOption] = useState<SortOption>("default");
-  const [openDropdown, setOpenDropdown] = useState<OpenDropdown>(null);
   const [error, setError] = useState("");
-
-  const filtersRef = useRef<HTMLDivElement | null>(null);
 
   const categoryKey = category as keyof typeof CATEGORY_CONFIG | undefined;
   const categoryConfig = categoryKey ? CATEGORY_CONFIG[categoryKey] : undefined;
@@ -53,10 +33,9 @@ export default function CategoryPage() {
     async function loadCatalog() {
       if (!category) return;
 
-      setError("");
-
       try {
         setLoading(true);
+        setError("");
 
         let data;
 
@@ -68,15 +47,15 @@ export default function CategoryPage() {
           data = await getCatalogProducts(
             category,
             "other",
-            [...categoryConfig.knownSubcategories]
+            categoryConfig.knownSubcategories
           );
         } else {
           data = await getCatalogProducts(category, subcategory);
         }
 
         setItems(mapProductsToCardItems(data));
-      } catch (error) {
-        console.error("Failed to load category page:", error);
+      } catch (err) {
+        console.error("Failed to load category page:", err);
         setItems([]);
         setError("Не вдалося завантажити товари для цієї сторінки.");
       } finally {
@@ -87,91 +66,7 @@ export default function CategoryPage() {
     loadCatalog();
   }, [category, subcategory, categoryConfig]);
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        filtersRef.current &&
-        !filtersRef.current.contains(event.target as Node)
-      ) {
-        setOpenDropdown(null);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const rarityCounts = useMemo(() => {
-    return {
-      regular: items.filter((item) => item.rarity === "regular").length,
-      exclusive: items.filter((item) => item.rarity === "exclusive").length,
-      limited: items.filter((item) => item.rarity === "limited").length,
-    };
-  }, [items]);
-
-  const boxCounts = useMemo(() => {
-    return {
-      normal: items.filter((item) => !item.isBoxDamaged).length,
-      damaged: items.filter((item) => item.isBoxDamaged).length,
-    };
-  }, [items]);
-
-  const statusCounts = useMemo(() => {
-    return {
-      in_stock: items.filter((item) => item.availabilityStatus === "in_stock")
-        .length,
-      preorder: items.filter((item) => item.availabilityStatus === "preorder")
-        .length,
-    };
-  }, [items]);
-
-  const filteredItems = useMemo(() => {
-    let result = [...items];
-
-    if (rarityFilter !== "all") {
-      result = result.filter((item) => item.rarity === rarityFilter);
-    }
-
-    if (boxFilter === "normal") {
-      result = result.filter((item) => !item.isBoxDamaged);
-    }
-
-    if (boxFilter === "damaged") {
-      result = result.filter((item) => item.isBoxDamaged);
-    }
-
-    if (statusFilter !== "all") {
-      result = result.filter((item) => item.availabilityStatus === statusFilter);
-    }
-
-    if (sortOption === "price_asc") {
-      result.sort((a, b) => a.price - b.price);
-    }
-
-    if (sortOption === "price_desc") {
-      result.sort((a, b) => b.price - a.price);
-    }
-
-    if (sortOption === "name_asc") {
-      result.sort((a, b) => a.productName.localeCompare(b.productName));
-    }
-
-    if (sortOption === "name_desc") {
-      result.sort((a, b) => b.productName.localeCompare(a.productName));
-    }
-
-    return result;
-  }, [items, rarityFilter, boxFilter, statusFilter, sortOption]);
-
-  function resetFilters() {
-    setRarityFilter("all");
-    setBoxFilter("all");
-    setStatusFilter("all");
-    setSortOption("default");
-    setOpenDropdown(null);
-  }
-
-  const pageTitle =
+  const title =
     category === "new"
       ? "Новинки"
       : category === "preorder"
@@ -185,53 +80,14 @@ export default function CategoryPage() {
   return (
     <div className="store-page">
       <Header />
-
-      <main className="search-page">
-        <div className="search-page-header">
-          <h1>{pageTitle}</h1>
-        </div>
-
-        <div ref={filtersRef}>
-          <CatalogFilters
-            totalItems={items.length}
-            filteredCount={filteredItems.length}
-            rarityFilter={rarityFilter}
-            setRarityFilter={setRarityFilter}
-            boxFilter={boxFilter}
-            setBoxFilter={setBoxFilter}
-            statusFilter={statusFilter}
-            setStatusFilter={setStatusFilter}
-            sortOption={sortOption}
-            setSortOption={setSortOption}
-            openDropdown={openDropdown}
-            setOpenDropdown={setOpenDropdown}
-            rarityCounts={rarityCounts}
-            boxCounts={boxCounts}
-            statusCounts={statusCounts}
-            resetFilters={resetFilters}
-          />
-        </div>
-
-        {loading ? (
-          <div className="store-loading">Завантаження...</div>
-        ) : error ? (
-          <div className="search-empty-box">{error}</div>
-        ) : filteredItems.length === 0 ? (
-          <div className="search-empty-box">
-            Для цієї сторінки товарів не знайдено.
-          </div>
-        ) : (
-          <div className="product-grid">
-            {filteredItems.map((item) => (
-              <ProductVariantCard
-                key={`${item.productId}-${item.variantId}`}
-                item={item}
-              />
-            ))}
-          </div>
-        )}
-      </main>
-
+      <CatalogPageLayout
+        key={`catalog-${category ?? ""}-${subcategory ?? ""}`}
+        title={title}
+        items={items}
+        loading={loading}
+        error={error}
+        emptyText="Для цієї сторінки товарів не знайдено."
+      />
       <Footer />
     </div>
   );
