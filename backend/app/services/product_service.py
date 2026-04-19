@@ -79,13 +79,38 @@ class ProductService:
         if not q:
             return []
 
-        ilike_query = f"%{q}%"
+        anywhere_query = f"%{q}%"
+        prefix_query = f"{q}%"
 
+        # Для коротких запитів робимо строгіший пошук
+        if len(q) <= 2:
+            stmt = (
+                select(Product)
+                .distinct()
+                .outerjoin(ProductAlias, ProductAlias.product_id == Product.id)
+                .options(
+                    selectinload(Product.images),
+                    selectinload(Product.aliases),
+                    selectinload(Product.variants),
+                )
+                .where(
+                    Product.is_active.is_(True),
+                    or_(
+                        Product.name.ilike(prefix_query),
+                        Product.series.ilike(prefix_query),
+                        Product.product_number.ilike(prefix_query),
+                        ProductAlias.alias.ilike(prefix_query),
+                    ),
+                )
+                .order_by(Product.created_at.desc(), Product.id.desc())
+            )
+            return list(db.scalars(stmt).all())
+
+        # Для довших запитів можна дозволити ширший пошук
         stmt = (
             select(Product)
             .distinct()
             .outerjoin(ProductAlias, ProductAlias.product_id == Product.id)
-            .outerjoin(ProductVariant, ProductVariant.product_id == Product.id)
             .options(
                 selectinload(Product.images),
                 selectinload(Product.aliases),
@@ -94,14 +119,10 @@ class ProductService:
             .where(
                 Product.is_active.is_(True),
                 or_(
-                    Product.name.ilike(ilike_query),
-                    Product.series.ilike(ilike_query),
-                    Product.product_number.ilike(ilike_query),
-                    Product.category.ilike(ilike_query),
-                    Product.subcategory.ilike(ilike_query),
-                    ProductAlias.alias.ilike(ilike_query),
-                    ProductVariant.slug.ilike(ilike_query),
-                    ProductVariant.variant_name.ilike(ilike_query),
+                    Product.name.ilike(anywhere_query),
+                    Product.series.ilike(anywhere_query),
+                    Product.product_number.ilike(anywhere_query),
+                    ProductAlias.alias.ilike(anywhere_query),
                 ),
             )
             .order_by(Product.created_at.desc(), Product.id.desc())
