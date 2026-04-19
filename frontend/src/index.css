@@ -130,9 +130,17 @@ a {
 }
 
 .home-banner {
-  max-width: 1360px;
+  position: relative;
+  max-width: 1450px;
   margin: 24px auto 0;
-  padding: 0 24px;
+  min-height: 640px;
+  border-radius: 36px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  padding: 56px 72px;
 }
 
 .home-banner-overlay {
@@ -149,8 +157,10 @@ a {
 }
 
 .home-banner-content {
-  max-width: 560px;
-  color: #ffffff;
+  position: relative;
+  z-index: 2;
+  max-width: 640px;
+  color: white;
 }
 
 .home-banner-subtitle {
@@ -173,21 +183,100 @@ a {
   font-size: 18px;
 }
 
-.home-banner-btn {
-  border: none;
-  border-radius: 16px;
-  padding: 14px 20px;
+.banner-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 30px;
+  border-radius: 18px;
   background: #ffffff;
   color: #5b21b6;
+  text-decoration: none;
   font-weight: 800;
-  cursor: pointer;
-  transition: all 0.25s ease;
+  font-size: 18px;
+  transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
 }
 
-.home-banner-btn:hover {
+.banner-btn:hover {
   transform: scale(1.05);
   background: #6d28d9;
+  color: #ffffff;
+}
+
+.home-banner-eyebrow {
+  margin: 0 0 18px;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.home-banner-title {
+  margin: 0 0 20px;
+  font-size: 72px;
+  line-height: 1.02;
+  font-weight: 900;
+}
+
+.home-banner-description {
+  margin: 0 0 28px;
+  font-size: 22px;
+  line-height: 1.45;
+  max-width: 700px;
+}
+
+.home-banner-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 52px;
+  height: 52px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
   color: white;
+  font-size: 34px;
+  cursor: pointer;
+  z-index: 3;
+  backdrop-filter: blur(6px);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.home-banner-arrow:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.home-banner-arrow-left {
+  left: 24px;
+}
+
+.home-banner-arrow-right {
+  right: 24px;
+}
+
+.home-banner-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 3;
+}
+
+.home-banner-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.home-banner-dot.active {
+  background: #ffffff;
+  transform: scale(1.2);
 }
 
 .store-main {
