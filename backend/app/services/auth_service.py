@@ -15,10 +15,7 @@ class AuthService:
         if existing_user:
             raise ValueError("Користувач з таким email вже існує")
 
-        try:
-            password_hash = hash_password(payload.password)
-        except Exception:
-            raise ValueError("Пароль має бути від 6 до 64 символів")
+        password_hash = hash_password(payload.password)
 
         user = User(
             email=str(payload.email).lower(),

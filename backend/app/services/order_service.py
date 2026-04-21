@@ -13,10 +13,11 @@ from app.services.email_service import EmailService
 
 class OrderService:
     @staticmethod
-    def create_order(db: Session, payload) -> Order:
+    def create_order(db: Session, payload, current_user) -> Order:
         full_name_parts = payload.full_name.strip().split(maxsplit=1)
         first_name = full_name_parts[0]
         last_name = full_name_parts[1] if len(full_name_parts) > 1 else ""
+        user_id=current_user.id,
 
         total_amount = sum(Decimal(str(item.price)) * item.quantity for item in payload.items)
 
@@ -62,6 +63,7 @@ class OrderService:
 
         # 3. Створення замовлення
         order = Order(
+            user_id=current_user.id,
             order_number=f"FH-{uuid4().hex[:8].upper()}",
             customer_first_name=first_name,
             customer_last_name=last_name,
@@ -110,3 +112,13 @@ class OrderService:
                 print("ORDER EMAIL ERROR:", exc)
 
         return created_order
+    
+    @staticmethod
+    def get_user_orders(db: Session, user_id: int) -> list[Order]:
+        stmt = (
+            select(Order)
+            .options(selectinload(Order.items))
+            .where(Order.user_id == user_id)
+            .order_by(Order.created_at.desc(), Order.id.desc())
+        )
+        return list(db.scalars(stmt).all())

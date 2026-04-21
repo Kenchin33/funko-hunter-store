@@ -1,7 +1,5 @@
 from datetime import datetime
-
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
-
 
 class UserCreate(BaseModel):
     email: EmailStr
