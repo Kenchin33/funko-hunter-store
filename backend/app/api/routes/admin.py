@@ -7,6 +7,9 @@ from app.models.user import User
 from app.schemas.order import OrderRead
 from app.services.order_service import OrderService
 from app.schemas.order import OrderRead, OrderStatusUpdate
+from app.schemas.admin_product import AdminProductCreate
+from app.schemas.product import ProductRead
+from app.services.admin_product_service import AdminProductService
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
 
@@ -57,3 +60,25 @@ def update_admin_order_status(
         )
 
     return order
+
+@router.get("/products", response_model=list[ProductRead])
+def get_admin_products(
+    db: Session = Depends(get_db),
+    current_admin: User = Depends(get_current_admin),
+):
+    return AdminProductService.get_all_products(db)
+
+
+@router.post("/products", response_model=ProductRead, status_code=status.HTTP_201_CREATED)
+def create_admin_product(
+    payload: AdminProductCreate,
+    db: Session = Depends(get_db),
+    current_admin: User = Depends(get_current_admin),
+):
+    try:
+        return AdminProductService.create_product(db, payload)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc),
+        )

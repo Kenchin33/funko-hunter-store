@@ -6,6 +6,7 @@ from app.schemas.product import (
     ProductVariantRead,
 )
 from app.schemas.user import TokenResponse, UserCreate, UserLogin, UserRead
+from app.schemas.admin_product import AdminProductCreate
 
 __all__ = [
     "ProductRead",
@@ -20,4 +21,5 @@ __all__ = [
     "UserLogin",
     "UserRead",
     "TokenResponse",
+    "AdminProductCreate"
 ]
