@@ -8,6 +8,10 @@ class AdminProductImageCreate(BaseModel):
     sort_order: int = 0
 
 
+class AdminProductAliasCreate(BaseModel):
+    alias: str
+
+
 class AdminProductVariantCreate(BaseModel):
     slug: str
     variant_name: str
@@ -32,4 +36,9 @@ class AdminProductCreate(BaseModel):
     is_new: bool = False
     is_active: bool = True
     images: list[AdminProductImageCreate]
+    aliases: list[AdminProductAliasCreate]
     variants: list[AdminProductVariantCreate]
+
+
+class AdminProductUpdate(AdminProductCreate):
+    pass

@@ -7,7 +7,7 @@ from app.models.user import User
 from app.schemas.order import OrderRead
 from app.services.order_service import OrderService
 from app.schemas.order import OrderRead, OrderStatusUpdate
-from app.schemas.admin_product import AdminProductCreate
+from app.schemas.admin_product import AdminProductCreate, AdminProductUpdate
 from app.schemas.product import ProductRead
 from app.services.admin_product_service import AdminProductService
 
@@ -69,6 +69,21 @@ def get_admin_products(
     return AdminProductService.get_all_products(db)
 
 
+@router.get("/products/{product_id}", response_model=ProductRead)
+def get_admin_product_by_id(
+    product_id: int,
+    db: Session = Depends(get_db),
+    current_admin: User = Depends(get_current_admin),
+):
+    product = AdminProductService.get_product_by_id(db, product_id)
+    if not product:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Товар не знайдено",
+        )
+    return product
+
+
 @router.post("/products", response_model=ProductRead, status_code=status.HTTP_201_CREATED)
 def create_admin_product(
     payload: AdminProductCreate,
@@ -81,4 +96,42 @@ def create_admin_product(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(exc),
+        )
+
+
+@router.put("/products/{product_id}", response_model=ProductRead)
+def update_admin_product(
+    product_id: int,
+    payload: AdminProductUpdate,
+    db: Session = Depends(get_db),
+    current_admin: User = Depends(get_current_admin),
+):
+    try:
+        product = AdminProductService.update_product(db, product_id, payload)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc),
+        )
+
+    if not product:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Товар не знайдено",
+        )
+
+    return product
+
+
+@router.delete("/products/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_admin_product(
+    product_id: int,
+    db: Session = Depends(get_db),
+    current_admin: User = Depends(get_current_admin),
+):
+    deleted = AdminProductService.delete_product(db, product_id)
+    if not deleted:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Товар не знайдено",
         )
