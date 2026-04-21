@@ -70,7 +70,12 @@ export interface AdminProductCreatePayload {
   is_new: boolean;
   is_active: boolean;
   images: AdminProductImageCreate[];
+  aliases: AdminProductAliasCreate[];
   variants: AdminProductVariantCreate[];
+}
+
+export interface AdminProductAliasCreate {
+  alias: string;
 }
 
 export async function getAdminProducts(token: string) {
@@ -92,4 +97,34 @@ export async function createAdminProduct(
     },
   });
   return response.data;
+}
+
+export async function getAdminProductById(productId: number, token: string) {
+  const response = await api.get<Product>(`/admin/products/${productId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+}
+
+export async function updateAdminProduct(
+  productId: number,
+  payload: AdminProductCreatePayload,
+  token: string
+) {
+  const response = await api.put<Product>(`/admin/products/${productId}`, payload, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+}
+
+export async function deleteAdminProduct(productId: number, token: string) {
+  await api.delete(`/admin/products/${productId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 }

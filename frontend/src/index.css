@@ -2601,3 +2601,72 @@ a {
   align-items: center;
   gap: 8px;
 }
+
+.admin-form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-form-section h3,
+.admin-variant-card h4 {
+  margin: 0;
+  color: #2e1065;
+}
+
+.admin-variant-card {
+  padding: 18px;
+  border: 1px solid #ede9fe;
+  border-radius: 18px;
+  background: #faf7ff;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-product-thumb,
+.admin-product-thumb-placeholder {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  border: 1px solid #ede9fe;
+  background: #ffffff;
+}
+
+.admin-product-thumb {
+  object-fit: contain;
+  display: block;
+}
+
+.admin-product-thumb-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+}
+
+.admin-table-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.admin-table-edit-btn,
+.admin-table-delete-btn {
+  border: none;
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.admin-table-edit-btn {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+.admin-table-delete-btn {
+  background: #fee2e2;
+  color: #dc2626;
+}

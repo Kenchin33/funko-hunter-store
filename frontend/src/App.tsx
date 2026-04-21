@@ -18,6 +18,7 @@ import AdminOrdersPage from "./pages/AdminOrdersPage";
 import AdminOrderDetailsPage from "./pages/AdminOrderDetailsPage";
 import AdminProductsPage from "./pages/AdminProductsPage";
 import AdminCreateProductPage from "./pages/AdminCreateProductPage";
+import AdminEditProductPage from "./pages/AdminEditProductPage";
 
 export default function App() {
   return (
@@ -108,6 +109,14 @@ export default function App() {
           element={
             <AdminRoute>
               <AdminCreateProductPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/products/:productId/edit"
+          element={
+            <AdminRoute>
+              <AdminEditProductPage />
             </AdminRoute>
           }
         />
