@@ -6,6 +6,7 @@ from app.api.dependencies_auth import get_current_user
 from app.models.user import User
 from app.schemas.order import OrderCreate, OrderRead
 from app.services.order_service import OrderService
+from fastapi import APIRouter, Depends, HTTPException, status
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
 
@@ -25,3 +26,19 @@ def get_my_orders(
     current_user: User = Depends(get_current_user),
 ):
     return OrderService.get_user_orders(db, current_user.id)
+
+@router.get("/me/{order_number}", response_model=OrderRead)
+def get_my_order_by_number(
+    order_number: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    order = OrderService.get_user_order_by_number(db, current_user.id, order_number)
+
+    if not order:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Замовлення не знайдено",
+        )
+
+    return order

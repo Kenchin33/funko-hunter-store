@@ -122,3 +122,15 @@ class OrderService:
             .order_by(Order.created_at.desc(), Order.id.desc())
         )
         return list(db.scalars(stmt).all())
+    
+    @staticmethod
+    def get_user_order_by_number(db: Session, user_id: int, order_number: str) -> Order | None:
+        stmt = (
+            select(Order)
+            .options(selectinload(Order.items))
+            .where(
+                Order.user_id == user_id,
+                Order.order_number == order_number,
+            )
+        )
+        return db.scalar(stmt)
