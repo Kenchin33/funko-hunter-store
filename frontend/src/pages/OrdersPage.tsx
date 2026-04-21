@@ -92,16 +92,25 @@ export default function OrdersPage() {
                     Доставка: {order.delivery_city}, відділення {order.delivery_branch}
                   </div>
 
-                  <div className="profile-order-products">
-                    {order.items.slice(0, 3).map((item) => (
-                      <div key={item.id} className="profile-order-product">
-                        <span>{item.product_name_snapshot}</span>
-                        <span>
-                          {item.quantity} × {item.price_snapshot} грн
-                        </span>
-                      </div>
-                    ))}
-                  </div>
+                  <div className="profile-order-images">
+                    {order.items.slice(0, 3).map((item) =>
+                        item.image_url_snapshot ? (
+                        <img
+                            key={item.id}
+                            src={item.image_url_snapshot}
+                            alt={item.product_name_snapshot}
+                            className="profile-order-preview-image"
+                        />
+                        ) : (
+                        <div
+                            key={item.id}
+                            className="profile-order-preview-image profile-order-preview-placeholder"
+                        >
+                            No image
+                        </div>
+                        )
+                    )}
+                   </div>
                 </div>
               ))}
             </div>

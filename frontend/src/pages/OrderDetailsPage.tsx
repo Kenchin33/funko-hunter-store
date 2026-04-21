@@ -80,10 +80,10 @@ export default function OrderDetailsPage() {
 
               <div className="order-details-delivery">
                 <h3>Адреса доставки</h3>
-                <p>
-                  {order.delivery_city}, відділення {order.delivery_branch}
+                <p className="order-details-delivery-text">
+                    {order.delivery_city}, відділення {order.delivery_branch}
                 </p>
-              </div>
+               </div>
 
               <div className="order-details-items">
                 <h3>Товари у замовленні</h3>
