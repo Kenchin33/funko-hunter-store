@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { useAuth } from "../hooks/useAuth";
@@ -45,6 +46,8 @@ export default function ProfilePage() {
     loadOrders();
   }, [token]);
 
+  const latestOrder = orders[0] ?? null;
+
   return (
     <div className="store-page">
       <Header />
@@ -76,52 +79,65 @@ export default function ProfilePage() {
         <section className="profile-orders-card">
           <div className="profile-orders-header">
             <h2>Мої замовлення</h2>
+
+            <Link to="/orders" className="profile-view-all-btn">
+              Переглянути усі замовлення
+            </Link>
           </div>
 
           {loading ? (
             <div className="store-loading">Завантаження замовлень...</div>
           ) : error ? (
             <div className="search-empty-box">{error}</div>
-          ) : orders.length === 0 ? (
+          ) : !latestOrder ? (
             <div className="search-empty-box">У вас ще немає замовлень.</div>
           ) : (
-            <div className="profile-orders-list">
-              {orders.map((order) => (
-                <div key={order.id} className="profile-order-item">
-                  <div className="profile-order-top">
-                    <div>
-                      <div className="profile-order-number">
-                        Замовлення {order.order_number}
-                      </div>
-                      <div className="profile-order-date">
-                        {new Date(order.created_at).toLocaleString("uk-UA")}
-                      </div>
-                    </div>
+            <div className="profile-latest-order-card">
+              <div className="profile-order-top">
+                <div>
+                  <Link
+                    to={`/orders/${latestOrder.order_number}`}
+                    className="profile-order-number-link"
+                  >
+                    Замовлення {latestOrder.order_number}
+                  </Link>
 
-                    <div className="profile-order-meta">
-                      <span className="profile-order-status">
-                        {formatStatus(order.status)}
-                      </span>
-                      <strong>{order.total_amount} грн</strong>
-                    </div>
-                  </div>
-
-                  <div className="profile-order-delivery">
-                    Доставка: {order.delivery_city}, відділення {order.delivery_branch}
-                  </div>
-
-                  <div className="profile-order-products">
-                    {order.items.map((item) => (
-                      <div key={item.id} className="profile-order-product">
-                        <span>{item.product_name_snapshot}</span>
-                        <span>
-                          {item.quantity} × {item.price_snapshot} грн
-                        </span>
-                      </div>
-                    ))}
+                  <div className="profile-order-date">
+                    {new Date(latestOrder.created_at).toLocaleString("uk-UA")}
                   </div>
                 </div>
-              ))}
+
+                <div className="profile-order-meta">
+                  <span className="profile-order-status">
+                    {formatStatus(latestOrder.status)}
+                  </span>
+                  <strong>{latestOrder.total_amount} грн</strong>
+                </div>
+              </div>
+
+              <div className="profile-order-delivery">
+                Доставка: {latestOrder.delivery_city}, відділення {latestOrder.delivery_branch}
+              </div>
+
+              <div className="profile-order-images">
+                {latestOrder.items.slice(0, 3).map((item) =>
+                  item.image_url_snapshot ? (
+                    <img
+                      key={item.id}
+                      src={item.image_url_snapshot}
+                      alt={item.product_name_snapshot}
+                      className="profile-order-preview-image"
+                    />
+                  ) : (
+                    <div
+                      key={item.id}
+                      className="profile-order-preview-image profile-order-preview-placeholder"
+                    >
+                      No image
+                    </div>
+                  )
+                )}
+              </div>
             </div>
           )}
         </section>

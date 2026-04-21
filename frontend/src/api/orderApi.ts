@@ -64,3 +64,12 @@ export async function getMyOrders(token: string) {
   });
   return response.data;
 }
+
+export async function getMyOrderByNumber(orderNumber: string, token: string) {
+  const response = await api.get<OrderRead>(`/orders/me/${orderNumber}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+}

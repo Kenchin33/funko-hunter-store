@@ -11,6 +11,8 @@ import RegisterPage from "./pages/RegisterPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicOnlyRoute from "./components/PublicOnlyRoute";
 import ProfilePage from "./pages/ProfilePage";
+import OrdersPage from "./pages/OrdersPage";
+import OrderDetailsPage from "./pages/OrderDetailsPage";
 
 export default function App() {
   return (
@@ -53,6 +55,22 @@ export default function App() {
           element={
             <ProtectedRoute>
               <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute>
+              <OrdersPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders/:orderNumber"
+          element={
+            <ProtectedRoute>
+              <OrderDetailsPage />
             </ProtectedRoute>
           }
         />
