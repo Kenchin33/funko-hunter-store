@@ -2532,3 +2532,10 @@ a {
   background: #fee2e2;
   color: #dc2626;
 }
+
+.store-account-admin-link {
+  color: #5b21b6;
+  font-weight: 800;
+  text-decoration: none;
+  margin-right: 6px;
+}
