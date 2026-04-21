@@ -46,7 +46,7 @@ export default function AdminEditProductPage() {
             aliases:
               product.aliases.length > 0
                 ? product.aliases.map((alias) => ({ alias: alias.alias ?? "" }))
-                : [{ alias: "" }, { alias: "" }, { alias: "" }],
+                : [{ alias: "" }],
             variants:
               product.variants.length >= 2
                 ? product.variants.map((variant) => ({

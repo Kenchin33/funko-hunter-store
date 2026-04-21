@@ -2670,3 +2670,51 @@ a {
   background: #fee2e2;
   color: #dc2626;
 }
+
+.admin-form-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.admin-secondary-btn {
+  border: none;
+  border-radius: 12px;
+  padding: 10px 14px;
+  background: #ede9fe;
+  color: #5b21b6;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-dynamic-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-dynamic-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+}
+
+.admin-dynamic-row input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #ddd6fe;
+  border-radius: 14px;
+  font: inherit;
+  outline: none;
+}
+
+.admin-remove-btn {
+  border: none;
+  border-radius: 12px;
+  padding: 10px 14px;
+  background: #fee2e2;
+  color: #dc2626;
+  font-weight: 700;
+  cursor: pointer;
+}

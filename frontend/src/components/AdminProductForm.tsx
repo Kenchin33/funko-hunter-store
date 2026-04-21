@@ -30,7 +30,7 @@ export default function AdminProductForm({
         { image_url: "", sort_order: 0 },
         { image_url: "", sort_order: 1 },
       ],
-      aliases: [{ alias: "" }, { alias: "" }, { alias: "" }],
+      aliases: [{ alias: "" }],
       variants: [
         {
           slug: "",
@@ -93,6 +93,23 @@ export default function AdminProductForm({
       aliases: prev.aliases.map((alias, i) =>
         i === index ? { ...alias, alias: value } : alias
       ),
+    }));
+  }
+
+  function addAliasField() {
+    setForm((prev) => ({
+      ...prev,
+      aliases: [...prev.aliases, { alias: "" }],
+    }));
+  }
+  
+  function removeAliasField(index: number) {
+    setForm((prev) => ({
+      ...prev,
+      aliases:
+        prev.aliases.length === 1
+          ? [{ alias: "" }]
+          : prev.aliases.filter((_, i) => i !== index),
     }));
   }
 
@@ -177,15 +194,35 @@ export default function AdminProductForm({
       </div>
 
       <div className="admin-form-section">
-        <h3>Aliases</h3>
-        <div className="admin-form-grid">
+        <div className="admin-form-section-header">
+          <h3>Aliases</h3>
+
+          <button
+            type="button"
+            className="admin-secondary-btn"
+            onClick={addAliasField}
+          >
+            Додати alias
+          </button>
+        </div>
+
+        <div className="admin-dynamic-list">
           {form.aliases.map((alias, index) => (
-            <input
-              key={index}
-              placeholder={`Alias ${index + 1}`}
-              value={alias.alias}
-              onChange={(e) => handleAliasChange(index, e.target.value)}
-            />
+            <div key={index} className="admin-dynamic-row">
+              <input
+                placeholder={`Alias ${index + 1}`}
+                value={alias.alias}
+                onChange={(e) => handleAliasChange(index, e.target.value)}
+              />
+
+              <button
+                type="button"
+                className="admin-remove-btn"
+                onClick={() => removeAliasField(index)}
+              >
+                Видалити
+              </button>
+            </div>
           ))}
         </div>
       </div>
