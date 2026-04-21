@@ -81,9 +81,9 @@ export default function OrdersPage() {
                     </div>
 
                     <div className="profile-order-meta">
-                      <span className="profile-order-status">
-                        {formatStatus(order.status)}
-                      </span>
+                    <span className={`profile-order-status status-${order.status}`}>
+                      {formatStatus(order.status)}
+                    </span>
                       <strong>{order.total_amount} грн</strong>
                     </div>
                   </div>

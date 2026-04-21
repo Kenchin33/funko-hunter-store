@@ -262,9 +262,12 @@ export default function Header() {
                 </Link>
               )}
             
-              <Link to="/profile" className="store-account-name">
-                {user?.first_name}
-              </Link>
+            <Link
+              to={user?.is_admin ? "/admin/orders" : "/profile"}
+              className="store-account-name"
+            >
+              {user?.first_name}
+            </Link>
             
               <button className="store-account-logout" onClick={logout}>
                 Вийти

@@ -2019,10 +2019,23 @@ a {
   justify-content: center;
   padding: 6px 12px;
   border-radius: 999px;
-  background: #ede9fe;
-  color: #5b21b6;
   font-weight: 700;
   font-size: 13px;
+}
+
+.status-new {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+.status-resolved {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-rejected {
+  background: #fee2e2;
+  color: #dc2626;
 }
 
 .profile-order-products {
@@ -2471,4 +2484,51 @@ a {
   .admin-order-summary {
     align-items: flex-start;
   }
+}
+
+.admin-orders-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.admin-filter-btn {
+  border: none;
+  border-radius: 14px;
+  padding: 10px 14px;
+  background: #f3e8ff;
+  color: #5b21b6;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-filter-btn.active {
+  background: #7c3aed;
+  color: #ffffff;
+}
+
+.admin-order-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.admin-complete-btn,
+.admin-cancel-btn {
+  border: none;
+  border-radius: 14px;
+  padding: 12px 16px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.admin-complete-btn {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.admin-cancel-btn {
+  background: #fee2e2;
+  color: #dc2626;
 }

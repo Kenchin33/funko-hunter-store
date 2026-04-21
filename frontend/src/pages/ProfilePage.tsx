@@ -108,9 +108,9 @@ export default function ProfilePage() {
                 </div>
 
                 <div className="profile-order-meta">
-                  <span className="profile-order-status">
-                    {formatStatus(latestOrder.status)}
-                  </span>
+                <span className={`profile-order-status status-${latestOrder.status}`}>
+                  {formatStatus(latestOrder.status)}
+                </span>
                   <strong>{latestOrder.total_amount} грн</strong>
                 </div>
               </div>

@@ -26,6 +26,15 @@ export default function AdminOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  type AdminOrderFilter = "all" | "new" | "resolved" | "rejected";
+
+  const [statusFilter, setStatusFilter] = useState<AdminOrderFilter>("all");
+
+  const filteredOrders =
+  statusFilter === "all"
+    ? orders
+    : orders.filter((order) => order.status === statusFilter);
+
   useEffect(() => {
     async function loadOrders() {
       if (!token) return;
@@ -56,6 +65,32 @@ export default function AdminOrdersPage() {
         <div className="admin-empty-box">Замовлень ще немає.</div>
       ) : (
         <div className="admin-table-wrap">
+          <div className="admin-orders-filters">
+            <button
+              className={`admin-filter-btn ${statusFilter === "all" ? "active" : ""}`}
+              onClick={() => setStatusFilter("all")}
+            >
+              Усі
+            </button>
+            <button
+              className={`admin-filter-btn ${statusFilter === "new" ? "active" : ""}`}
+              onClick={() => setStatusFilter("new")}
+            >
+              Нові
+            </button>
+            <button
+              className={`admin-filter-btn ${statusFilter === "resolved" ? "active" : ""}`}
+              onClick={() => setStatusFilter("resolved")}
+            >
+              Виконані
+            </button>
+            <button
+              className={`admin-filter-btn ${statusFilter === "rejected" ? "active" : ""}`}
+              onClick={() => setStatusFilter("rejected")}
+            >
+              Скасовані
+            </button>
+          </div>
           <table className="admin-table">
             <thead>
               <tr>
@@ -69,7 +104,7 @@ export default function AdminOrdersPage() {
               </tr>
             </thead>
             <tbody>
-              {orders.map((order) => (
+              {filteredOrders.map((order) => (
                 <tr key={order.id}>
                   <td>
                     <Link
@@ -84,7 +119,9 @@ export default function AdminOrdersPage() {
                   </td>
                   <td>{order.customer_email}</td>
                   <td>{order.customer_phone}</td>
-                  <td>{formatStatus(order.status)}</td>
+                  <span className={`profile-order-status status-${order.status}`}>
+                    {formatStatus(order.status)}
+                  </span>
                   <td>{order.total_amount} грн</td>
                   <td>{new Date(order.created_at).toLocaleString("uk-UA")}</td>
                 </tr>

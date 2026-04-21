@@ -22,3 +22,20 @@ export async function getAdminOrderByNumber(orderNumber: string, token: string) 
   });
   return response.data;
 }
+
+export async function updateAdminOrderStatus(
+  orderNumber: string,
+  status: "new" | "resolved" | "rejected",
+  token: string
+) {
+  const response = await api.patch<OrderRead>(
+    `/admin/orders/${orderNumber}/status`,
+    { status },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+}

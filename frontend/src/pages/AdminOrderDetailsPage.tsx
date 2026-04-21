@@ -4,6 +4,8 @@ import AdminLayout from "../components/AdminLayout";
 import { getAdminOrderByNumber } from "../api/adminApi";
 import type { OrderRead } from "../api/orderApi";
 import { useAuth } from "../hooks/useAuth";
+import { updateAdminOrderStatus } from "../api/adminApi";
+import { useToast } from "../hooks/useToast";
 
 function formatStatus(status: string) {
   switch (status) {
@@ -23,6 +25,7 @@ function formatStatus(status: string) {
 export default function AdminOrderDetailsPage() {
   const { orderNumber } = useParams();
   const { token } = useAuth();
+  const { showToast } = useToast();
 
   const [order, setOrder] = useState<OrderRead | null>(null);
   const [loading, setLoading] = useState(true);
@@ -48,6 +51,24 @@ export default function AdminOrderDetailsPage() {
     loadOrder();
   }, [orderNumber, token]);
 
+  async function handleStatusChange(nextStatus: "resolved" | "rejected") {
+    if (!token || !orderNumber) return;
+  
+    try {
+      const updated = await updateAdminOrderStatus(orderNumber, nextStatus, token);
+      setOrder(updated);
+      showToast(
+        nextStatus === "resolved"
+          ? "Замовлення позначено як виконане"
+          : "Замовлення скасовано",
+        nextStatus === "rejected" ? "error" : "default"
+      );
+    } catch (err) {
+      console.error(err);
+      showToast("Не вдалося оновити статус замовлення", "error");
+    }
+  }
+
   return (
     <AdminLayout title={`Замовлення ${orderNumber ?? ""}`}>
       {loading ? (
@@ -60,6 +81,25 @@ export default function AdminOrderDetailsPage() {
         <div className="admin-order-card">
           <div className="admin-order-top">
             <div>
+            {order.status === "new" && (
+              <div className="admin-order-actions">
+                <button
+                  className="admin-complete-btn"
+                  onClick={() => handleStatusChange("resolved")}
+                  type="button"
+                >
+                  Позначити як виконане
+                </button>
+
+                <button
+                  className="admin-cancel-btn"
+                  onClick={() => handleStatusChange("rejected")}
+                  type="button"
+                >
+                  Скасувати замовлення
+                </button>
+              </div>
+            )}
               <h2>{order.order_number}</h2>
               <p>
                 {order.customer_first_name} {order.customer_last_name}
@@ -69,7 +109,9 @@ export default function AdminOrderDetailsPage() {
             </div>
 
             <div className="admin-order-summary">
-              <span className="profile-order-status">{formatStatus(order.status)}</span>
+            <span className={`profile-order-status status-${order.status}`}>
+              {formatStatus(order.status)}
+            </span>
               <strong>{order.total_amount} грн</strong>
             </div>
           </div>
