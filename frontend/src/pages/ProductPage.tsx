@@ -5,6 +5,7 @@ import { useCart } from "../hooks/useCart";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import type { Product } from "../types/product";
+import { useToast } from "../hooks/useToast";
 
 function getRarityLabel(rarity: string) {
   if (rarity === "exclusive") return "Ексклюзив";
@@ -20,10 +21,10 @@ function calculateDiscount(price: number, compareAtPrice: number | null) {
 export default function ProductPage() {
   const { slug } = useParams();
   const { addToCart } = useCart();
+  const { showToast } = useToast();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [activeImage, setActiveImage] = useState(0);
-  const [showLimitToast, setShowLimitToast] = useState(false);
 
   useEffect(() => {
     async function loadProduct() {
@@ -79,13 +80,6 @@ export default function ProductPage() {
   const discount = calculateDiscount(price, compareAtPrice);
   const image = currentProduct.images[0]?.image_url ?? null;
 
-  function showToast() {
-    setShowLimitToast(true);
-    window.setTimeout(() => {
-      setShowLimitToast(false);
-    }, 2500);
-  }
-
   function handleAddToCart() {
     const added = addToCart({
       variantId: activeVariant.id,
@@ -102,7 +96,7 @@ export default function ProductPage() {
     });
 
     if (!added) {
-      showToast();
+      showToast("У кошику вже максимальна доступна кількість цього товару.", "error");
       return;
     }
 
@@ -112,13 +106,6 @@ export default function ProductPage() {
   return (
     <div className="store-page">
       <Header />
-
-      {showLimitToast && (
-        <div className="cart-limit-toast">
-          У кошику вже максимальна доступна кількість цього товару.
-        </div>
-      )}
-
       <main className="product-page">
         <div className="product-page-container">
           <div className="product-images">

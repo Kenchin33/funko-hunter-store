@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useCart } from "../hooks/useCart";
 import type { ProductCardItem } from "../types/productCard";
+import { useToast } from "../hooks/useToast";
 
 interface Props {
   item: ProductCardItem;
@@ -8,6 +9,7 @@ interface Props {
 
 export default function ProductVariantCard({ item }: Props) {
   const { addToCart } = useCart();
+  const { showToast } = useToast();
 
   const discount =
     item.compareAtPrice && item.compareAtPrice > item.price
@@ -33,13 +35,7 @@ export default function ProductVariantCard({ item }: Props) {
     });
 
     if (!added) {
-      window.dispatchEvent(
-        new CustomEvent("cart:limit-reached", {
-          detail: {
-            message: "У кошику вже максимальна доступна кількість цього товару.",
-          },
-        })
-      );
+      showToast("У кошику вже максимальна доступна кількість цього товару.", "error");
       return;
     }
 

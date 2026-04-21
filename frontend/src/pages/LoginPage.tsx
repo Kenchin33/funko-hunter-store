@@ -1,15 +1,20 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { loginUser } from "../api/authApi";
 import { useAuth } from "../hooks/useAuth";
 import axios from "axios";
+import { useToast } from "../hooks/useToast";
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const from = (location.state as { from?: { pathname?: string } })?.from?.pathname || "/";
+  const { showToast } = useToast();
+  const hasShownAuthToast = useRef(false);
+  
+  const from =
+  (location.state as { from?: { pathname?: string } })?.from?.pathname || "/";
   const { login } = useAuth();
 
   const [form, setForm] = useState({
@@ -18,6 +23,22 @@ export default function LoginPage() {
   });
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    const state = location.state as
+      | { authMessage?: string; from?: { pathname?: string } }
+      | undefined;
+  
+    if (state?.authMessage && !hasShownAuthToast.current) {
+      hasShownAuthToast.current = true;
+      showToast(state.authMessage);
+  
+      navigate(location.pathname, {
+        replace: true,
+        state: state.from ? { from: state.from } : null,
+      });
+    }
+  }, [location.pathname, location.state, navigate, showToast]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setForm({
@@ -47,6 +68,7 @@ export default function LoginPage() {
       setSubmitting(false);
     }
   }
+
 
   return (
     <div className="store-page">
