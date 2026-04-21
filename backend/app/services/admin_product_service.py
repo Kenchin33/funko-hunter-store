@@ -47,7 +47,7 @@ class AdminProductService:
             product_number=payload.product_number.strip(),
             category=payload.category.strip(),
             subcategory=payload.subcategory.strip() if payload.subcategory else None,
-            description=payload.description.strip() if payload.description else None,
+            short_description=payload.short_description.strip() if payload.short_description else None,
             rarity=payload.rarity.strip(),
             is_new=payload.is_new,
             is_active=payload.is_active,
@@ -123,7 +123,7 @@ class AdminProductService:
         product.product_number = payload.product_number.strip()
         product.category = payload.category.strip()
         product.subcategory = payload.subcategory.strip() if payload.subcategory else None
-        product.description = payload.description.strip() if payload.description else None
+        product.short_description = payload.short_description.strip() if payload.short_description else None
         product.rarity = payload.rarity.strip()
         product.is_new = payload.is_new
         product.is_active = payload.is_active

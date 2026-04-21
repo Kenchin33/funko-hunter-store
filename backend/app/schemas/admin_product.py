@@ -31,7 +31,7 @@ class AdminProductCreate(BaseModel):
     product_number: str
     category: str
     subcategory: str | None = None
-    description: str | None = None
+    short_description: str | None = None
     rarity: str
     is_new: bool = False
     is_active: bool = True
