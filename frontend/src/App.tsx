@@ -16,6 +16,8 @@ import OrderDetailsPage from "./pages/OrderDetailsPage";
 import AdminRoute from "./components/AdminRoute";
 import AdminOrdersPage from "./pages/AdminOrdersPage";
 import AdminOrderDetailsPage from "./pages/AdminOrderDetailsPage";
+import AdminProductsPage from "./pages/AdminProductsPage";
+import AdminCreateProductPage from "./pages/AdminCreateProductPage";
 
 export default function App() {
   return (
@@ -90,6 +92,22 @@ export default function App() {
           element={
             <AdminRoute>
               <AdminOrderDetailsPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/products"
+          element={
+            <AdminRoute>
+              <AdminProductsPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/products/new"
+          element={
+            <AdminRoute>
+              <AdminCreateProductPage />
             </AdminRoute>
           }
         />

@@ -2539,3 +2539,65 @@ a {
   text-decoration: none;
   margin-right: 6px;
 }
+
+.admin-page-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 18px;
+}
+
+.admin-primary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 14px;
+  padding: 12px 16px;
+  background: #7c3aed;
+  color: #ffffff;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.admin-product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.admin-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.admin-form-grid input,
+.admin-form-grid select,
+.admin-form-textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #ddd6fe;
+  border-radius: 14px;
+  font: inherit;
+  outline: none;
+}
+
+.admin-form-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.admin-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  color: #2e1065;
+  font-weight: 600;
+}
+
+.admin-checkboxes label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

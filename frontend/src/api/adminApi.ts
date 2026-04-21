@@ -1,5 +1,6 @@
 import axios from "axios";
 import type { OrderRead } from "./orderApi";
+import type { Product } from "../types/product";
 
 const api = axios.create({
   baseURL: "http://127.0.0.1:8000/api",
@@ -37,5 +38,58 @@ export async function updateAdminOrderStatus(
       },
     }
   );
+  return response.data;
+}
+
+export interface AdminProductImageCreate {
+  image_url: string;
+  sort_order: number;
+}
+
+export interface AdminProductVariantCreate {
+  slug: string;
+  variant_name: string;
+  price: number;
+  compare_at_price?: number | null;
+  availability_status: string;
+  delivery_eta?: string | null;
+  stock_quantity: number;
+  is_box_damaged: boolean;
+  is_active: boolean;
+}
+
+export interface AdminProductCreatePayload {
+  name: string;
+  slug: string;
+  series: string;
+  product_number: string;
+  category: string;
+  subcategory?: string | null;
+  description?: string | null;
+  rarity: string;
+  is_new: boolean;
+  is_active: boolean;
+  images: AdminProductImageCreate[];
+  variants: AdminProductVariantCreate[];
+}
+
+export async function getAdminProducts(token: string) {
+  const response = await api.get<Product[]>("/admin/products", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+}
+
+export async function createAdminProduct(
+  payload: AdminProductCreatePayload,
+  token: string
+) {
+  const response = await api.post<Product>("/admin/products", payload, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return response.data;
 }
