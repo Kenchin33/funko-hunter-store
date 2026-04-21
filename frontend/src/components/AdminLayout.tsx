@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 interface AdminLayoutProps {
   title: string;
@@ -7,7 +7,7 @@ interface AdminLayoutProps {
 }
 
 export default function AdminLayout({ title, children }: AdminLayoutProps) {
-  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <div className="admin-page">
@@ -26,9 +26,14 @@ export default function AdminLayout({ title, children }: AdminLayoutProps) {
           </Link>
         </nav>
 
-        <button className="admin-logout-btn" onClick={logout}>
-          Вийти
-        </button>
+        <div className="admin-sidebar-footer">
+          <button
+            className="admin-home-btn"
+            onClick={() => navigate("/")}
+          >
+            ← На головну
+          </button>
+        </div>
       </aside>
 
       <main className="admin-content">

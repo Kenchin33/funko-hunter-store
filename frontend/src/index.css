@@ -2310,17 +2310,6 @@ a {
   background: rgba(255, 255, 255, 0.16);
 }
 
-.admin-logout-btn {
-  margin-top: auto;
-  border: none;
-  border-radius: 14px;
-  padding: 12px 14px;
-  background: #7c3aed;
-  color: #ffffff;
-  font-weight: 800;
-  cursor: pointer;
-}
-
 .admin-content {
   padding: 32px;
 }
@@ -2729,4 +2718,29 @@ a {
   font-size: 13px;
   font-weight: 600;
   color: #6b21a8;
+}
+
+.admin-sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.admin-sidebar-footer {
+  margin-top: auto;
+  padding-top: 20px;
+}
+
+.admin-home-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #6d28d9, #9333ea);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-home-btn:hover {
+  background: linear-gradient(135deg, #9863ca);
 }
