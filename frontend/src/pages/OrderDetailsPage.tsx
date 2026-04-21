@@ -20,6 +20,16 @@ function formatStatus(status: string) {
   }
 }
 
+function cleanOrderItemName(name: string) {
+    // якщо пошкоджена коробка → залишаємо
+    if (name.toLowerCase().includes("пошкоджена коробка")) {
+      return name.replace(/\s*\(Стандартна коробка\)\s*/gi, "").trim();
+    }
+  
+    // якщо стандартна → повністю прибираємо
+    return name.replace(/\s*\(Стандартна коробка\)\s*/gi, "").trim();
+  }
+
 export default function OrderDetailsPage() {
   const { orderNumber } = useParams();
   const { token } = useAuth();
@@ -104,9 +114,9 @@ export default function OrderDetailsPage() {
                       )}
 
                       <div>
-                        <div className="order-details-item-title">
-                          {item.product_name_snapshot}
-                        </div>
+                      <div className="order-details-item-title">
+                        {cleanOrderItemName(item.product_name_snapshot)}
+                      </div>
                       </div>
                     </div>
 

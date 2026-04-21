@@ -2233,3 +2233,19 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
+.order-details-delivery-text {
+  margin: 0;
+  color: #2e1065;
+  font-weight: 700;
+}
+
+.order-damaged-badge {
+  margin-left: 10px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: #fee2e2;
+  color: #dc2626;
+  font-size: 12px;
+  font-weight: 600;
+}

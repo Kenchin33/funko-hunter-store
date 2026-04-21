@@ -93,7 +93,7 @@ export default function OrdersPage() {
                   </div>
 
                   <div className="profile-order-images">
-                    {order.items.slice(0, 3).map((item) =>
+                    {order.items.slice(0, 8).map((item) =>
                         item.image_url_snapshot ? (
                         <img
                             key={item.id}
