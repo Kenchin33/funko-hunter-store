@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { loginUser } from "../api/authApi";
@@ -8,6 +8,8 @@ import axios from "axios";
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: { pathname?: string } })?.from?.pathname || "/";
   const { login } = useAuth();
 
   const [form, setForm] = useState({
@@ -32,7 +34,7 @@ export default function LoginPage() {
       setSubmitting(true);
       const result = await loginUser(form);
       login(result.access_token, result.user);
-      navigate("/");
+      navigate(from, { replace: true });
     } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
           const message =
