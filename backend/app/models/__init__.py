@@ -4,6 +4,7 @@ from app.models.product import Product
 from app.models.product_alias import ProductAlias
 from app.models.product_image import ProductImage
 from app.models.product_variant import ProductVariant
+from app.models.user import User
 
 __all__ = [
     "Product",
@@ -12,4 +13,5 @@ __all__ = [
     "ProductVariant",
     "Order",
     "OrderItem",
+    "User",
 ]

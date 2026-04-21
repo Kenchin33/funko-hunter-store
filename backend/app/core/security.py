@@ -1,0 +1,25 @@
+from datetime import datetime, timedelta, UTC
+
+from jose import jwt
+from passlib.context import CryptContext
+
+from app.core.config import settings
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
+
+
+def verify_password(password: str, password_hash: str) -> bool:
+    return pwd_context.verify(password, password_hash)
+
+
+def create_access_token(user_id: int, expires_delta: timedelta | None = None) -> str:
+    expire = datetime.now(UTC) + (expires_delta or timedelta(days=7))
+    payload = {
+        "sub": str(user_id),
+        "exp": expire,
+    }
+    return jwt.encode(payload, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
