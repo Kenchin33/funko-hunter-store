@@ -79,4 +79,13 @@ export const CATEGORY_CONFIG = {
         "sponge-bob",
       ],
     },
+    books: {
+      label: "Books",
+      subcategories: [
+        { slug: "powerless", label: "The Powerless" },
+        { slug: "folk-of-the-air", label: "The Folk of the Air" },
+        { slug: "into-darkness", label: "Into Darkness" },
+      ],
+      knownSubcategories: ["powerless", "folk-of-the-air", "into-darkness"],
+    },
   } as const;

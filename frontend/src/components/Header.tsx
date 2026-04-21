@@ -7,6 +7,7 @@ import type { Product } from "../types/product";
 import { mapProductsToCardItems } from "../utils/productCards";
 import MiniCart from "./MiniCart";
 import { CATEGORY_CONFIG } from "../config/catalog";
+import { useAuth } from "../hooks/useAuth";
 
 const menuItems = [
   {
@@ -34,6 +35,10 @@ const menuItems = [
     categoryKey: "cartoons",
   },
   {
+    label: "Books",
+    categoryKey: "books",
+  },
+  {
     label: "Передзамовлення",
     path: "/catalog/preorder",
   },
@@ -45,6 +50,7 @@ export default function Header() {
   const [searchValue, setSearchValue] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const { isAuthenticated, user, logout } = useAuth();
 
   const cartRef = useRef<HTMLDivElement | null>(null);
   const searchRef = useRef<HTMLDivElement | null>(null);
@@ -247,9 +253,22 @@ export default function Header() {
             {cartOpen && <MiniCart onClose={() => setCartOpen(false)} />}
           </div>
 
-          <button className="store-icon-btn" aria-label="Акаунт">
-            👤
-          </button>
+          <div className="store-account-box">
+            {isAuthenticated ? (
+              <div className="store-account-auth">
+                <div className="store-account-name">
+                  {user?.first_name}
+                </div>
+                <button className="store-account-logout" onClick={logout}>
+                  Вийти
+                </button>
+              </div>
+            ) : (
+              <Link to="/login" className="store-icon-btn" aria-label="Акаунт">
+                👤
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </header>

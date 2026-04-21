@@ -6,6 +6,8 @@ import OrderSuccessPage from "./pages/OrderSuccessPage";
 import ProductPage from "./pages/ProductPage";
 import SearchPage from "./pages/SearchPage";
 import CategoryPage from "./pages/CategoryPage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 
 export default function App() {
   return (
@@ -20,6 +22,8 @@ export default function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
         <Route path="/catalog/:category" element={<CategoryPage />} />
         <Route path="/catalog/:category/:subcategory" element={<CategoryPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
       </Routes>
     </BrowserRouter>
   );

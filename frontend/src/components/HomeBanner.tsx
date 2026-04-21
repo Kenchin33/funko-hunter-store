@@ -9,28 +9,28 @@ const slides = [
     description:
       "Девід, Люсі та Ребека. Передзамовляй та отримуй одним з перших улюблених героїв!",
     buttonText: "Переглянути фігурки",
-    link: "/search?q=cyberpunk-edgerunners",
+    link: "/catalog/anime/cyberpunk-edgerunners",
     image: "/banner-cyberpunk.jpg",
   },
   {
     id: 2,
-    eyebrow: "НОВИНКИ ANIME",
-    title: "Нові фігурки Naruto уже в Funko Hunter",
+    eyebrow: "РАРИТЕТИ У НАЯВНОСТІ",
+    title: "Breaking Bad знову у наявності",
     description:
-      "Ітачі, Орочімару, Мінато та інші герої вже доступні для замовлення.",
-    buttonText: "Переглянути Naruto",
-    link: "/catalog/anime/naruto",
-    image: "/banner-naruto.jpg",
+      "Бажані фігурки 2014 року знову у наявності!",
+    buttonText: "Замовляй зараз",
+    link: "/catalog/movies/breaking-bad",
+    image: "/banner-breakind-bad.jpg",
   },
   {
     id: 3,
-    eyebrow: "ЕКСКЛЮЗИВНІ ФІГУРКИ",
-    title: "One Piece поповнює твою колекцію",
+    eyebrow: "СВІТОВИЙ БЕСТСЕЛЛЕР ВЖЕ ТУТ",
+    title: "Передзамовлення на Folk in the Air вже тут",
     description:
-      "Ексклюзивні та лімітовані Funko Pop по One Piece вже на сайті.",
-    buttonText: "Переглянути One Piece",
-    link: "/catalog/anime/one-piece",
-    image: "/banner-one-piece.jpg",
+      "Джуд, Кардан та інші герої вже на сайті",
+    buttonText: "Передзамовляй першим",
+    link: "/catalog/books/folk-of-the-air",
+    image: "/banner-folk-of-the-air.jpg",
   },
 ];
 
@@ -59,25 +59,30 @@ export default function HomeBanner() {
     setActiveIndex((prev) => (prev + 1) % slides.length);
   }
 
-  const activeSlide = slides[activeIndex];
-
   return (
-    <section
-      className="home-banner"
-      style={{
-        backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${activeSlide.image})`,
-      }}
-    >
-      <div className="home-banner-content">
-        <p className="home-banner-eyebrow">{activeSlide.eyebrow}</p>
+    <section className="home-banner">
+      <div className="home-banner-slides">
+        {slides.map((slide, index) => (
+          <div
+            key={slide.id}
+            className={`home-banner-slide ${index === activeIndex ? "active" : ""}`}
+            style={{ backgroundImage: `url(${slide.image})` }}
+          >
+            <div className="home-banner-overlay" />
 
-        <h1 className="home-banner-title">{activeSlide.title}</h1>
+            <div className="home-banner-content">
+              <p className="home-banner-eyebrow">{slide.eyebrow}</p>
 
-        <p className="home-banner-description">{activeSlide.description}</p>
+              <h1 className="home-banner-title">{slide.title}</h1>
 
-        <Link to={activeSlide.link} className="banner-btn">
-          {activeSlide.buttonText}
-        </Link>
+              <p className="home-banner-description">{slide.description}</p>
+
+              <Link to={slide.link} className="banner-btn">
+                {slide.buttonText}
+              </Link>
+            </div>
+          </div>
+        ))}
       </div>
 
       <button

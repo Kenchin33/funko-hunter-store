@@ -133,54 +133,72 @@ a {
   position: relative;
   max-width: 1450px;
   margin: 24px auto 0;
-  min-height: 640px;
+  height: 520px;
   border-radius: 36px;
   overflow: hidden;
+}
+
+.home-banner-slides {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.home-banner-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
   background-size: cover;
   background-position: center;
-  display: flex;
-  align-items: center;
-  padding: 56px 72px;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+
+.home-banner-slide.active {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .home-banner-overlay {
-  border-radius: 28px;
-  overflow: hidden;
-  min-height: 420px;
-  background:
-    linear-gradient(135deg, rgba(76, 29, 149, 0.82), rgba(124, 58, 237, 0.7)),
-    url("https://images.unsplash.com/photo-1618336753974-aae8e04506aa?auto=format&fit=crop&w=1400&q=80")
-      center/cover no-repeat;
-  display: flex;
-  align-items: center;
-  padding: 48px;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(44, 16, 101, 0.68) 0%,
+    rgba(44, 16, 101, 0.32) 34%,
+    rgba(44, 16, 101, 0.12) 100%
+  );
 }
 
 .home-banner-content {
   position: relative;
   z-index: 2;
-  max-width: 640px;
+  max-width: 620px;
   color: white;
+  padding: 72px 80px;
 }
 
-.home-banner-subtitle {
-  margin: 0 0 8px;
-  font-size: 14px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: #ddd6fe;
-}
-
-.home-banner-content h1 {
-  margin: 0 0 14px;
-  font-size: 48px;
-  line-height: 1.1;
-}
-
-.home-banner-content p {
-  margin: 0 0 24px;
+.home-banner-eyebrow {
+  margin: 0 0 16px;
   font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.home-banner-title {
+  margin: 0 0 18px;
+  font-size: 50px;
+  line-height: 1.02;
+  font-weight: 900;
+}
+
+.home-banner-description {
+  margin: 0 0 28px;
+  font-size: 22px;
+  line-height: 1.45;
+  max-width: 640px;
 }
 
 .banner-btn {
@@ -203,28 +221,6 @@ a {
   color: #ffffff;
 }
 
-.home-banner-eyebrow {
-  margin: 0 0 18px;
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.home-banner-title {
-  margin: 0 0 20px;
-  font-size: 72px;
-  line-height: 1.02;
-  font-weight: 900;
-}
-
-.home-banner-description {
-  margin: 0 0 28px;
-  font-size: 22px;
-  line-height: 1.45;
-  max-width: 700px;
-}
-
 .home-banner-arrow {
   position: absolute;
   top: 50%;
@@ -239,7 +235,7 @@ a {
   cursor: pointer;
   z-index: 3;
   backdrop-filter: blur(6px);
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition: background 0.2s ease;
 }
 
 .home-banner-arrow:hover {
@@ -1760,4 +1756,110 @@ a {
     width: 100%;
     min-width: unset;
   }
+}
+
+.auth-page {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px 60px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 520px;
+  background: #ffffff;
+  border: 1px solid #ede9fe;
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 12px 28px rgba(76, 29, 149, 0.08);
+}
+
+.auth-card h1 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #2e1065;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #ddd6fe;
+  border-radius: 14px;
+  font: inherit;
+  outline: none;
+}
+
+.auth-form input:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+}
+
+.auth-error {
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #fee2e2;
+  color: #991b1b;
+  font-weight: 600;
+}
+
+.auth-submit-btn {
+  border: none;
+  border-radius: 16px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  color: #ffffff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.auth-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.auth-switch-text {
+  margin-top: 18px;
+  color: #6b7280;
+}
+
+.auth-switch-text a {
+  color: #5b21b6;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.store-account-box {
+  display: flex;
+  align-items: center;
+}
+
+.store-account-auth {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  border-radius: 16px;
+  padding: 10px 12px;
+}
+
+.store-account-name {
+  color: #2e1065;
+  font-weight: 700;
+}
+
+.store-account-logout {
+  border: none;
+  background: transparent;
+  color: #7c3aed;
+  font-weight: 700;
+  cursor: pointer;
 }
