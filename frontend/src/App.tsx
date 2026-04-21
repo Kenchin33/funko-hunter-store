@@ -13,6 +13,9 @@ import PublicOnlyRoute from "./components/PublicOnlyRoute";
 import ProfilePage from "./pages/ProfilePage";
 import OrdersPage from "./pages/OrdersPage";
 import OrderDetailsPage from "./pages/OrderDetailsPage";
+import AdminRoute from "./components/AdminRoute";
+import AdminOrdersPage from "./pages/AdminOrdersPage";
+import AdminOrderDetailsPage from "./pages/AdminOrderDetailsPage";
 
 export default function App() {
   return (
@@ -72,6 +75,22 @@ export default function App() {
             <ProtectedRoute>
               <OrderDetailsPage />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/orders"
+          element={
+            <AdminRoute>
+              <AdminOrdersPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/orders/:orderNumber"
+          element={
+            <AdminRoute>
+              <AdminOrderDetailsPage />
+            </AdminRoute>
           }
         />
       </Routes>

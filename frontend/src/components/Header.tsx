@@ -256,13 +256,20 @@ export default function Header() {
           <div className="store-account-box">
             {isAuthenticated ? (
               <div className="store-account-auth">
-                <Link to="/profile" className="store-account-name">
-                  {user?.first_name}
+              {user?.is_admin && (
+                <Link to="/admin/orders" className="store-account-admin-link">
+                  Адмінка
                 </Link>
-                <button className="store-account-logout" onClick={logout}>
-                  Вийти
-                </button>
-              </div>
+              )}
+            
+              <Link to="/profile" className="store-account-name">
+                {user?.first_name}
+              </Link>
+            
+              <button className="store-account-logout" onClick={logout}>
+                Вийти
+              </button>
+            </div>
             ) : (
               <Link to="/login" className="store-icon-btn" aria-label="Акаунт">
                 👤
