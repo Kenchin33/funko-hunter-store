@@ -65,7 +65,7 @@ export interface AdminProductCreatePayload {
   product_number: string;
   category: string;
   subcategory?: string | null;
-  description?: string | null;
+  short_description?: string | null;
   rarity: string;
   is_new: boolean;
   is_active: boolean;

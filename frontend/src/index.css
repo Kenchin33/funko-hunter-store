@@ -2718,3 +2718,15 @@ a {
   font-weight: 700;
   cursor: pointer;
 }
+
+.admin-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b21a8;
+}

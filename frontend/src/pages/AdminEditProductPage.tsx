@@ -35,7 +35,7 @@ export default function AdminEditProductPage() {
             product_number: product.product_number ?? "",
             category: product.category ?? "",
             subcategory: product.subcategory ?? "",
-            description: product.short_description ?? "",
+            short_description: product.short_description ?? "",
             rarity: product.rarity ?? "regular",
             is_new: product.is_new,
             is_active: product.is_active,

@@ -22,7 +22,7 @@ export default function AdminProductForm({
       product_number: "",
       category: "",
       subcategory: "",
-      description: "",
+      short_description: "",
       rarity: "regular",
       is_new: false,
       is_active: true,
@@ -159,9 +159,9 @@ export default function AdminProductForm({
       </div>
 
       <textarea
-        name="description"
-        placeholder="Опис"
-        value={form.description ?? ""}
+        name="short_description"
+        placeholder="Короткий опис"
+        value={form.short_description ?? ""}
         onChange={handleChange}
         className="admin-form-textarea"
       />
@@ -245,14 +245,16 @@ export default function AdminProductForm({
                 value={variant.variant_name}
                 onChange={(e) => handleVariantChange(index, "variant_name", e.target.value)}
               />
-              <input
-                placeholder="Ціна"
-                type="number"
-                value={variant.price}
-                onChange={(e) =>
-                  handleVariantChange(index, "price", Number(e.target.value))
-                }
-              />
+              <div className="admin-field">
+                <label>Ціна</label>
+                <input
+                  type="number"
+                  value={variant.price}
+                  onChange={(e) =>
+                    handleVariantChange(index, "price", Number(e.target.value))
+                  }
+                />
+              </div>
               <input
                 placeholder="Стара ціна"
                 type="number"
@@ -285,14 +287,16 @@ export default function AdminProductForm({
                   )
                 }
               />
-              <input
-                placeholder="Кількість"
-                type="number"
-                value={variant.stock_quantity}
-                onChange={(e) =>
-                  handleVariantChange(index, "stock_quantity", Number(e.target.value))
-                }
-              />
+              <div className="admin-field">
+                <label>Кількість на складі</label>
+                <input
+                  type="number"
+                  value={variant.stock_quantity}
+                  onChange={(e) =>
+                    handleVariantChange(index, "stock_quantity", Number(e.target.value))
+                  }
+                />
+              </div>
             </div>
 
             <div className="admin-checkboxes">
