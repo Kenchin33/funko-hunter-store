@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     SMTP_PASSWORD: str = ""
     ADMIN_EMAIL: str = ""
 
-    JWT_SECRET_KEY: str = "super-secret-key-change-me"
+    JWT_SECRET_KEY: str = "daf328e800e9ecdecbc628a2223b3cdcb082e07224dd8e08da52dfbf1efe5817"
     JWT_ALGORITHM: str = "HS256"
 
     model_config = SettingsConfigDict(

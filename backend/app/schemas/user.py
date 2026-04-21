@@ -1,11 +1,11 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 class UserCreate(BaseModel):
     email: EmailStr
-    password: str
+    password: str = Field(min_length=6, max_length=64)
     first_name: str
     last_name: str
     phone: str | None = None
@@ -13,7 +13,7 @@ class UserCreate(BaseModel):
 
 class UserLogin(BaseModel):
     email: EmailStr
-    password: str
+    password: str = Field(min_length=6, max_length=64)
 
 
 class UserRead(BaseModel):
