@@ -153,3 +153,31 @@ class OrderService:
             .where(Order.order_number == order_number)
         )
         return db.scalar(stmt)
+    
+    @staticmethod
+    def update_order_status(db: Session, order_number: str, new_status: str) -> Order | None:
+        order = db.scalar(
+            select(Order)
+            .options(selectinload(Order.items))
+            .where(Order.order_number == order_number)
+        )
+
+        if not order:
+            return None
+
+        allowed_statuses = {"new", "resolved", "rejected"}
+        if new_status not in allowed_statuses:
+            raise ValueError("Некоректний статус")
+
+        order.status = new_status
+        db.add(order)
+        db.commit()
+        db.refresh(order)
+
+        if new_status == "rejected":
+            try:
+                EmailService.send_order_rejected_to_client(order)
+            except Exception as exc:
+                print("ORDER REJECT EMAIL ERROR:", exc)
+
+        return order

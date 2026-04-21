@@ -114,3 +114,20 @@ class EmailService:
             to_email=settings.ADMIN_EMAIL,
             html_body=html,
         )
+    
+    @staticmethod
+    def send_order_rejected_to_client(order) -> None:
+        html = f"""
+        <h2>Ваше замовлення скасовано</h2>
+        <p><strong>Номер замовлення:</strong> {order.order_number}</p>
+        <p>На жаль, ваше замовлення було скасоване.</p>
+        <p><strong>Адреса доставки:</strong> {order.delivery_city}, відділення {order.delivery_branch}</p>
+        <p><strong>Сума:</strong> {order.total_amount} грн</p>
+        <p>Якщо у вас виникли питання — зв'яжіться з нами.</p>
+        """
+
+        EmailService._send_email(
+            subject=f"Замовлення {order.order_number} скасовано",
+            to_email=order.customer_email,
+            html_body=html,
+        )
