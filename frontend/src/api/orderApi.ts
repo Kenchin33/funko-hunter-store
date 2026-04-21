@@ -23,7 +23,44 @@ export interface CreateOrderPayload {
   items: OrderItemPayload[];
 }
 
-export async function createOrder(payload: CreateOrderPayload) {
-  const response = await api.post("/orders", payload);
+export async function createOrder(payload: CreateOrderPayload, token: string) {
+  const response = await api.post("/orders", payload, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+}
+
+export interface OrderItemRead {
+  id: number;
+  product_id: number;
+  product_name_snapshot: string;
+  image_url_snapshot?: string | null;
+  price_snapshot: string;
+  quantity: number;
+}
+
+export interface OrderRead {
+  id: number;
+  order_number: string;
+  customer_first_name: string;
+  customer_last_name: string;
+  customer_email: string;
+  customer_phone: string;
+  delivery_city: string;
+  delivery_branch: string;
+  status: string;
+  total_amount: string;
+  created_at: string;
+  items: OrderItemRead[];
+}
+
+export async function getMyOrders(token: string) {
+  const response = await api.get<OrderRead[]>("/orders/me", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return response.data;
 }

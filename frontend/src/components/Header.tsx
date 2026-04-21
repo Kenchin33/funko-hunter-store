@@ -256,9 +256,9 @@ export default function Header() {
           <div className="store-account-box">
             {isAuthenticated ? (
               <div className="store-account-auth">
-                <div className="store-account-name">
+                <Link to="/profile" className="store-account-name">
                   {user?.first_name}
-                </div>
+                </Link>
                 <button className="store-account-logout" onClick={logout}>
                   Вийти
                 </button>

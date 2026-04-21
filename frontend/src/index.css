@@ -1923,3 +1923,133 @@ a {
     transform: translateY(0);
   }
 }
+
+.profile-page {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 40px 24px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.profile-card,
+.profile-orders-card {
+  background: #ffffff;
+  border: 1px solid #ede9fe;
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 12px 28px rgba(76, 29, 149, 0.06);
+}
+
+.profile-card h1,
+.profile-orders-card h2 {
+  margin-top: 0;
+  color: #2e1065;
+}
+
+.profile-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.profile-info-item {
+  background: #faf7ff;
+  border: 1px solid #f1ebff;
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.profile-info-item span {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.profile-info-item strong {
+  color: #2e1065;
+  font-size: 18px;
+}
+
+.profile-orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.profile-order-item {
+  border: 1px solid #f1ebff;
+  border-radius: 20px;
+  padding: 20px;
+  background: #fcfbff;
+}
+
+.profile-order-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.profile-order-number {
+  font-weight: 800;
+  color: #2e1065;
+}
+
+.profile-order-date,
+.profile-order-delivery {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.profile-order-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  color: #2e1065;
+}
+
+.profile-order-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #ede9fe;
+  color: #5b21b6;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.profile-order-products {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-order-product {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: #f8f4ff;
+  color: #2e1065;
+}
+
+.store-account-name {
+  color: #2e1065;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.checkout-readonly-input {
+  background: #f5f3ff;
+  color: #6b7280;
+  cursor: not-allowed;
+}

@@ -4,18 +4,22 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { createOrder } from "../api/orderApi";
 import { useCart } from "../hooks/useCart";
+import { useAuth } from "../hooks/useAuth";
 
 export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
+  const { token, user } = useAuth();
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({
-    fullName: "",
-    email: "",
-    phone: "",
-    city: "",
-    branch: "",
-  });
+  const [form, setForm] = useState(() => ({
+  fullName: user
+    ? `${user.first_name ?? ""} ${user.last_name ?? ""}`.trim()
+    : "",
+  email: user?.email ?? "",
+  phone: user?.phone ?? "",
+  city: "",
+  branch: "",
+}));
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -42,22 +46,30 @@ export default function CheckoutPage() {
     try {
       setSubmitting(true);
 
-      const order = await createOrder({
-        full_name: form.fullName,
-        email: form.email,
-        phone: form.phone,
-        city: form.city,
-        branch: form.branch,
-        items: items.map((item) => ({
-          product_id: item.productId,
-          variant_id: item.variantId,
-          product_name: item.productName,
-          variant_name: item.variantName,
-          image_url: item.imageUrl,
-          price: item.price,
-          quantity: item.quantity,
-        })),
-      });
+      if (!token) {
+        alert("Потрібно увійти в акаунт");
+        return;
+      }
+      
+      const order = await createOrder(
+        {
+          full_name: form.fullName,
+          email: form.email,
+          phone: form.phone,
+          city: form.city,
+          branch: form.branch,
+          items: items.map((item) => ({
+            product_id: item.productId,
+            variant_id: item.variantId,
+            product_name: item.productName,
+            variant_name: item.variantName,
+            image_url: item.imageUrl,
+            price: item.price,
+            quantity: item.quantity,
+          })),
+        },
+        token
+      );
 
       clearCart();
 
@@ -102,7 +114,8 @@ export default function CheckoutPage() {
               name="email"
               placeholder="Email"
               value={form.email}
-              onChange={handleChange}
+              readOnly
+              className="checkout-readonly-input"
             />
 
             <input

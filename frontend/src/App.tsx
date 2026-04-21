@@ -10,6 +10,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicOnlyRoute from "./components/PublicOnlyRoute";
+import ProfilePage from "./pages/ProfilePage";
 
 export default function App() {
   return (
@@ -45,6 +46,14 @@ export default function App() {
             <PublicOnlyRoute>
               <RegisterPage />
             </PublicOnlyRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
           }
         />
       </Routes>
