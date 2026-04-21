@@ -120,13 +120,19 @@ a {
 }
 
 .store-icon-btn {
-  width: 46px;
-  height: 46px;
+  width: 52px;
+  height: 52px;
   border: none;
-  border-radius: 14px;
-  background: #ede9fe;
+  border-radius: 16px;
+  background: #f3edff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 24px;
+  line-height: 1;
   cursor: pointer;
-  font-size: 20px;
+  padding: 0;
 }
 
 .home-banner {

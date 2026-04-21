@@ -38,6 +38,16 @@ export default function RegisterPage() {
       return;
     }
 
+    if (form.password.length < 6) {
+      setError("Пароль має містити щонайменше 6 символів");
+      return;
+    }
+    
+    if (form.password.length > 64) {
+      setError("Пароль має містити не більше 64 символів");
+      return;
+    }
+
     try {
       setSubmitting(true);
 
