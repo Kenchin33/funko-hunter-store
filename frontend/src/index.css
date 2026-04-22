@@ -2275,6 +2275,7 @@ a {
   display: grid;
   grid-template-columns: 260px 1fr;
   background: #f8f5ff;
+  align-items: start;
 }
 
 .admin-sidebar {
@@ -2284,6 +2285,9 @@ a {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  min-height: 100vh;
+  position: sticky;
+  top: 0;
 }
 
 .admin-sidebar-brand {
@@ -2721,9 +2725,21 @@ a {
 }
 
 .admin-sidebar {
+  background: #2e1065;
+  color: #ffffff;
+  padding: 24px 18px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  min-height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+.admin-sidebar-top {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .admin-sidebar-footer {
@@ -2731,17 +2747,22 @@ a {
   padding-top: 20px;
 }
 
-.admin-home-btn {
+.admin-back-home-btn {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  padding: 12px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #6d28d9, #9333ea);
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
+  border-radius: 16px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  color: #ffffff;
+  font-weight: 800;
+  text-decoration: none;
+  box-sizing: border-box;
 }
 
-.admin-home-btn:hover {
+.admin-back-home-btn:hover {
   background: linear-gradient(135deg, #9863ca);
 }
 
