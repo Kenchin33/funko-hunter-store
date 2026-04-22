@@ -10,6 +10,8 @@ from app.schemas.order import OrderRead, OrderStatusUpdate
 from app.schemas.admin_product import AdminProductCreate, AdminProductUpdate
 from app.schemas.product import ProductRead
 from app.services.admin_product_service import AdminProductService
+from app.schemas.complaint import ComplaintRead, ComplaintStatusUpdate
+from app.services.complaint_service import ComplaintService
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
 
@@ -135,3 +137,34 @@ def delete_admin_product(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Товар не знайдено",
         )
+
+@router.get("/complaints", response_model=list[ComplaintRead])
+def get_admin_complaints(
+    db: Session = Depends(get_db),
+    current_admin: User = Depends(get_current_admin),
+):
+    return ComplaintService.get_all_complaints(db)
+
+
+@router.patch("/complaints/{complaint_id}/status", response_model=ComplaintRead)
+def update_admin_complaint_status(
+    complaint_id: int,
+    payload: ComplaintStatusUpdate,
+    db: Session = Depends(get_db),
+    current_admin: User = Depends(get_current_admin),
+):
+    try:
+        complaint = ComplaintService.update_complaint_status(db, complaint_id, payload.status)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc),
+        )
+
+    if not complaint:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Скаргу не знайдено",
+        )
+
+    return complaint

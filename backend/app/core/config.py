@@ -21,6 +21,8 @@ class Settings(BaseSettings):
     JWT_SECRET_KEY: str = "daf328e800e9ecdecbc628a2223b3cdcb082e07224dd8e08da52dfbf1efe5817"
     JWT_ALGORITHM: str = "HS256"
 
+    ASSISTANT_API_KEY: str = "a9f3kL92mxPqz1YxFHSMD967-ASSISTANT-KEY"
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
