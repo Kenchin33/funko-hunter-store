@@ -1,331 +1,130 @@
-import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import AdminLayout from "../components/AdminLayout";
-import { deleteAdminProduct, getAdminProducts } from "../api/adminApi";
-import type { Product } from "../types/product";
+import AdminProductForm from "../components/AdminProductForm";
+import {
+  getAdminProductById,
+  updateAdminProduct,
+  type AdminProductCreatePayload,
+} from "../api/adminApi";
 import { useAuth } from "../hooks/useAuth";
 import { useToast } from "../hooks/useToast";
 
-type RarityFilter = "all" | "regular" | "exclusive" | "limited";
-type BoxFilter = "all" | "normal" | "damaged";
-type StatusFilter = "all" | "in_stock" | "preorder";
-type BooleanFilter = "all" | "yes" | "no";
-type SortOption = "newest" | "oldest" | "name_asc" | "name_desc";
-
-export default function AdminProductsPage() {
+export default function AdminEditProductPage() {
+  const { productId } = useParams();
   const { token } = useAuth();
   const { showToast } = useToast();
+  const navigate = useNavigate();
 
-  const [products, setProducts] = useState<Product[]>([]);
+  const [initialData, setInitialData] = useState<AdminProductCreatePayload | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  const [searchQuery, setSearchQuery] = useState("");
-  const [rarityFilter, setRarityFilter] = useState<RarityFilter>("all");
-  const [boxFilter, setBoxFilter] = useState<BoxFilter>("all");
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
-  const [isNewFilter, setIsNewFilter] = useState<BooleanFilter>("all");
-  const [isActiveFilter, setIsActiveFilter] = useState<BooleanFilter>("all");
-  const [sortOption, setSortOption] = useState<SortOption>("newest");
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    async function loadProducts() {
-      if (!token) return;
+    async function loadProduct() {
+      if (!token || !productId) return;
 
       try {
         setLoading(true);
-        setError("");
-        const data = await getAdminProducts(token);
-        setProducts(data);
+        const product = await getAdminProductById(Number(productId), token);
+
+        setInitialData({
+            name: product.name ?? "",
+            slug: product.slug ?? "",
+            series: product.series ?? "",
+            product_number: product.product_number ?? "",
+            category: product.category ?? "",
+            subcategory: product.subcategory ?? "",
+            short_description: product.short_description ?? "",
+            rarity: product.rarity ?? "regular",
+            is_new: product.is_new,
+            is_active: product.is_active,
+            images: [
+              { image_url: product.images[0]?.image_url ?? "", sort_order: 0 },
+              { image_url: product.images[1]?.image_url ?? "", sort_order: 1 },
+            ],
+            aliases:
+              product.aliases.length > 0
+                ? product.aliases.map((alias) => ({ alias: alias.alias ?? "" }))
+                : [{ alias: "" }],
+            variants:
+              product.variants.length >= 2
+                ? product.variants.map((variant) => ({
+                    slug: variant.slug ?? "",
+                    variant_name: variant.variant_name ?? "",
+                    price: Number(variant.price ?? 0),
+                    compare_at_price: variant.compare_at_price
+                      ? Number(variant.compare_at_price)
+                      : null,
+                    availability_status: variant.availability_status ?? "in_stock",
+                    delivery_eta: variant.delivery_eta ?? null,
+                    stock_quantity: variant.stock_quantity ?? 0,
+                    is_box_damaged: variant.is_box_damaged,
+                    is_active: variant.is_active,
+                  }))
+                : [
+                    {
+                      slug: "",
+                      variant_name: "Стандартна коробка",
+                      price: 0,
+                      compare_at_price: null,
+                      availability_status: "in_stock",
+                      delivery_eta: null,
+                      stock_quantity: 0,
+                      is_box_damaged: false,
+                      is_active: true,
+                    },
+                    {
+                      slug: "",
+                      variant_name: "Пошкоджена коробка",
+                      price: 0,
+                      compare_at_price: null,
+                      availability_status: "in_stock",
+                      delivery_eta: null,
+                      stock_quantity: 0,
+                      is_box_damaged: true,
+                      is_active: true,
+                    },
+                  ],
+          });
       } catch (err) {
         console.error(err);
-        setError("Не вдалося завантажити товари");
+        showToast("Не вдалося завантажити товар", "error");
       } finally {
         setLoading(false);
       }
     }
 
-    loadProducts();
-  }, [token]);
+    loadProduct();
+  }, [productId, token, showToast]);
 
-  async function handleDelete(productId: number) {
-    if (!token) return;
-
-    const confirmed = window.confirm("Точно видалити товар?");
-    if (!confirmed) return;
+  async function handleSubmit(payload: AdminProductCreatePayload) {
+    if (!token || !productId) return;
 
     try {
-      await deleteAdminProduct(productId, token);
-      setProducts((prev) => prev.filter((product) => product.id !== productId));
-      showToast("Товар видалено");
+      setSubmitting(true);
+      await updateAdminProduct(Number(productId), payload, token);
+      showToast("Товар успішно оновлено");
+      navigate("/admin/products");
     } catch (err) {
       console.error(err);
-      showToast("Не вдалося видалити товар", "error");
+      showToast("Не вдалося оновити товар", "error");
+    } finally {
+      setSubmitting(false);
     }
-  }
-
-  const filteredProducts = useMemo(() => {
-    let result = [...products];
-
-    const normalizedQuery = searchQuery.trim().toLowerCase();
-
-    if (normalizedQuery) {
-      result = result.filter((product) => {
-        const aliasText = (product.aliases ?? [])
-          .map((alias) => alias.alias?.toLowerCase() ?? "")
-          .join(" ");
-
-        const variantText = (product.variants ?? [])
-          .map((variant) => `${variant.slug ?? ""} ${variant.variant_name ?? ""}`.toLowerCase())
-          .join(" ");
-
-        const haystack = [
-          product.name ?? "",
-          product.slug ?? "",
-          product.series ?? "",
-          product.category ?? "",
-          product.subcategory ?? "",
-          product.product_number ?? "",
-          aliasText,
-          variantText,
-        ]
-          .join(" ")
-          .toLowerCase();
-
-        return haystack.includes(normalizedQuery);
-      });
-    }
-
-    if (rarityFilter !== "all") {
-      result = result.filter((product) => product.rarity === rarityFilter);
-    }
-
-    if (boxFilter === "damaged") {
-      result = result.filter((product) =>
-        product.variants?.some((variant) => variant.is_box_damaged)
-      );
-    }
-
-    if (boxFilter === "normal") {
-      result = result.filter((product) =>
-        product.variants?.some((variant) => !variant.is_box_damaged)
-      );
-    }
-
-    if (statusFilter !== "all") {
-      result = result.filter((product) =>
-        product.variants?.some(
-          (variant) =>
-            variant.is_active && variant.availability_status === statusFilter
-        )
-      );
-    }
-
-    if (isNewFilter !== "all") {
-      result = result.filter((product) =>
-        isNewFilter === "yes" ? product.is_new : !product.is_new
-      );
-    }
-
-    if (isActiveFilter !== "all") {
-      result = result.filter((product) =>
-        isActiveFilter === "yes" ? product.is_active : !product.is_active
-      );
-    }
-
-    if (sortOption === "name_asc") {
-      result.sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
-    }
-
-    if (sortOption === "name_desc") {
-      result.sort((a, b) => (b.name ?? "").localeCompare(a.name ?? ""));
-    }
-
-    if (sortOption === "newest") {
-      result.sort(
-        (a, b) =>
-          new Date(b.created_at ?? "").getTime() - new Date(a.created_at ?? "").getTime()
-      );
-    }
-
-    if (sortOption === "oldest") {
-      result.sort(
-        (a, b) =>
-          new Date(a.created_at ?? "").getTime() - new Date(b.created_at ?? "").getTime()
-      );
-    }
-
-    return result;
-  }, [
-    products,
-    searchQuery,
-    rarityFilter,
-    boxFilter,
-    statusFilter,
-    isNewFilter,
-    isActiveFilter,
-    sortOption,
-  ]);
-
-  function resetFilters() {
-    setSearchQuery("");
-    setRarityFilter("all");
-    setBoxFilter("all");
-    setStatusFilter("all");
-    setIsNewFilter("all");
-    setIsActiveFilter("all");
-    setSortOption("newest");
   }
 
   return (
-    <AdminLayout title="Товари">
-      <div className="admin-page-actions">
-        <Link to="/admin/products/new" className="admin-primary-btn">
-          Додати товар
-        </Link>
-      </div>
-
-      <div className="admin-products-toolbar">
-        <input
-          type="text"
-          className="admin-search-input"
-          placeholder="Пошук товарів..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-
-        <div className="admin-products-filters">
-          <select
-            value={sortOption}
-            onChange={(e) => setSortOption(e.target.value as SortOption)}
-          >
-            <option value="newest">Новіші</option>
-            <option value="oldest">Старіші</option>
-            <option value="name_asc">Назва A-Z</option>
-            <option value="name_desc">Назва Z-A</option>
-          </select>
-
-          <select
-            value={rarityFilter}
-            onChange={(e) => setRarityFilter(e.target.value as RarityFilter)}
-          >
-            <option value="all">Усі рідкості</option>
-            <option value="regular">Звичайна</option>
-            <option value="exclusive">Ексклюзив</option>
-            <option value="limited">Лімітка</option>
-          </select>
-
-          <select
-            value={boxFilter}
-            onChange={(e) => setBoxFilter(e.target.value as BoxFilter)}
-          >
-            <option value="all">Усі коробки</option>
-            <option value="normal">Ціла коробка</option>
-            <option value="damaged">Пошкоджена коробка</option>
-          </select>
-
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
-          >
-            <option value="all">Усі статуси</option>
-            <option value="in_stock">В наявності</option>
-            <option value="preorder">Передзамовлення</option>
-          </select>
-
-          <select
-            value={isNewFilter}
-            onChange={(e) => setIsNewFilter(e.target.value as BooleanFilter)}
-          >
-            <option value="all">Усі товари</option>
-            <option value="yes">Лише новинки</option>
-            <option value="no">Не новинки</option>
-          </select>
-
-          <select
-            value={isActiveFilter}
-            onChange={(e) => setIsActiveFilter(e.target.value as BooleanFilter)}
-          >
-            <option value="all">Усі активності</option>
-            <option value="yes">Активні</option>
-            <option value="no">Неактивні</option>
-          </select>
-
-          <button
-            type="button"
-            className="admin-secondary-btn"
-            onClick={resetFilters}
-          >
-            Скинути
-          </button>
-        </div>
-      </div>
-
-      {loading ? (
+    <AdminLayout title="Редагувати товар">
+      {loading || !initialData ? (
         <div className="admin-empty-box">Завантаження...</div>
-      ) : error ? (
-        <div className="admin-empty-box">{error}</div>
-      ) : filteredProducts.length === 0 ? (
-        <div className="admin-empty-box">Товари не знайдено.</div>
       ) : (
-        <div className="admin-table-wrap">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Фото</th>
-                <th>Назва</th>
-                <th>Категорія</th>
-                <th>Підкатегорія</th>
-                <th>Рідкість</th>
-                <th>Новинка</th>
-                <th>Активний</th>
-                <th>Дії</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredProducts.map((product) => (
-                <tr key={product.id}>
-                  <td>
-                    {product.images[0]?.image_url ? (
-                      <img
-                        src={product.images[0].image_url}
-                        alt={product.name}
-                        className="admin-product-thumb"
-                      />
-                    ) : (
-                      <div className="admin-product-thumb admin-product-thumb-placeholder">
-                        —
-                      </div>
-                    )}
-                  </td>
-                  <td>{product.name}</td>
-                  <td>{product.category}</td>
-                  <td>{product.subcategory || "—"}</td>
-                  <td>{product.rarity}</td>
-                  <td>{product.is_new ? "Так" : "Ні"}</td>
-                  <td>{product.is_active ? "Так" : "Ні"}</td>
-                  <td>
-                    <div className="admin-table-actions">
-                      <Link
-                        to={`/admin/products/${product.id}/edit`}
-                        className="admin-table-edit-btn"
-                      >
-                        Редагувати
-                      </Link>
-                      <button
-                        className="admin-table-delete-btn"
-                        onClick={() => handleDelete(product.id)}
-                        type="button"
-                      >
-                        Видалити
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <AdminProductForm
+          initialData={initialData}
+          submitLabel="Зберегти зміни"
+          onSubmit={handleSubmit}
+          submitting={submitting}
+        />
       )}
     </AdminLayout>
   );
