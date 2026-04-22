@@ -19,6 +19,7 @@ import AdminOrderDetailsPage from "./pages/AdminOrderDetailsPage";
 import AdminProductsPage from "./pages/AdminProductsPage";
 import AdminCreateProductPage from "./pages/AdminCreateProductPage";
 import AdminEditProductPage from "./pages/AdminEditProductPage";
+import AdminComplaintsPage from "./pages/AdminComplaintsPage";
 
 export default function App() {
   return (
@@ -117,6 +118,14 @@ export default function App() {
           element={
             <AdminRoute>
               <AdminEditProductPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/complaints"
+          element={
+            <AdminRoute>
+              <AdminComplaintsPage />
             </AdminRoute>
           }
         />

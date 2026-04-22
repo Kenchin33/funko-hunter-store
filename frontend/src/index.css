@@ -2802,3 +2802,63 @@ a {
   background: #ffffff;
   color: #2e1065;
 }
+
+.admin-complaints-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-complaint-card {
+  border: 1px solid #ede9fe;
+  border-radius: 18px;
+  background: #faf7ff;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-complaint-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.admin-complaint-number {
+  font-weight: 800;
+  color: #2e1065;
+}
+
+.admin-complaint-meta {
+  color: #6b7280;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.admin-complaint-topic {
+  font-weight: 700;
+  color: #2e1065;
+}
+
+.admin-complaint-message {
+  color: #2e1065;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.admin-complaint-photos {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.admin-complaint-photo {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid #ede9fe;
+  background: #ffffff;
+}

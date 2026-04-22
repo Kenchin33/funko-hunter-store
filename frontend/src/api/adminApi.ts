@@ -128,3 +128,49 @@ export async function deleteAdminProduct(productId: number, token: string) {
     },
   });
 }
+
+export interface AdminComplaintPhoto {
+  id: number;
+  image_url: string;
+}
+
+export interface AdminComplaint {
+  id: number;
+  complaint_number: string;
+  email: string | null;
+  order_number: string | null;
+  topic: string;
+  message: string;
+  status: string;
+  source: string;
+  is_resolved: boolean;
+  created_at: string;
+  updated_at: string;
+  photos: AdminComplaintPhoto[];
+}
+
+export async function getAdminComplaints(token: string) {
+  const response = await api.get<AdminComplaint[]>("/admin/complaints", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+}
+
+export async function updateAdminComplaintStatus(
+  complaintId: number,
+  status: "new" | "in_progress" | "resolved" | "rejected",
+  token: string
+) {
+  const response = await api.patch<AdminComplaint>(
+    `/admin/complaints/${complaintId}/status`,
+    { status },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+}
