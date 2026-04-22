@@ -2744,3 +2744,40 @@ a {
 .admin-home-btn:hover {
   background: linear-gradient(135deg, #9863ca);
 }
+
+.admin-products-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.admin-search-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #ddd6fe;
+  border-radius: 14px;
+  font: inherit;
+  outline: none;
+}
+
+.admin-search-input:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+}
+
+.admin-products-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.admin-products-filters select {
+  min-width: 180px;
+  padding: 12px 14px;
+  border: 1px solid #ddd6fe;
+  border-radius: 14px;
+  font: inherit;
+  background: #ffffff;
+  color: #2e1065;
+}
