@@ -26,7 +26,7 @@ export async function getProductBySlug(slug: string): Promise<Product> {
 }
 
 export async function getInStockProducts(): Promise<Product[]> {
-  const response = await api.get<Product[]>("/products/in_stock");
+  const response = await api.get<Product[]>("/products/in-stock");
   return response.data;
 }
 

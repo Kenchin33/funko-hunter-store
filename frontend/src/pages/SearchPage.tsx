@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { getAllProducts, searchProducts } from "../api/productApi";
+import { getAllProducts, getInStockProducts, searchProducts } from "../api/productApi";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import CatalogPageLayout from "../components/CatalogPageLayout";
@@ -13,7 +13,8 @@ export default function SearchPage() {
   const [searchParams] = useSearchParams();
 
   const query = searchParams.get("q")?.trim() ?? "";
-  const statusParam = searchParams.get("status");
+  const statusParam =
+  searchParams.get("status") ?? searchParams.get("availability_status");
 
   const initialStatusFilter: StatusFilter =
     statusParam === "in_stock" || statusParam === "preorder"
@@ -29,9 +30,22 @@ export default function SearchPage() {
       try {
         setLoading(true);
         setError("");
+  
+        const data = query
+          ? await searchProducts(query)
+          : initialStatusFilter === "in_stock"
+            ? await getInStockProducts()
+            : await getAllProducts();
 
-        const data = query ? await searchProducts(query) : await getAllProducts();
-        setItems(mapProductsToCardItems(data));
+        let mappedItems = mapProductsToCardItems(data);
+
+        if (initialStatusFilter === "in_stock") {
+          mappedItems = mappedItems.filter(
+            (item) => item.availabilityStatus === "in_stock"
+          );
+        }
+
+        setItems(mappedItems);
       } catch (err) {
         console.error("Search failed:", err);
         setItems([]);
@@ -40,9 +54,9 @@ export default function SearchPage() {
         setLoading(false);
       }
     }
-
+  
     runSearch();
-  }, [query, statusParam]);
+  }, [query, initialStatusFilter]);
 
   const title =
     initialStatusFilter === "in_stock"
