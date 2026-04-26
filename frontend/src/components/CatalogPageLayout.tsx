@@ -21,6 +21,7 @@ interface CatalogPageLayoutProps {
   loading: boolean;
   emptyText: string;
   error?: string;
+  initialStatusFilter?: StatusFilter;
 }
 
 export default function CatalogPageLayout({
@@ -30,10 +31,11 @@ export default function CatalogPageLayout({
   loading,
   emptyText,
   error,
+  initialStatusFilter = "all",
 }: CatalogPageLayoutProps) {
   const [rarityFilter, setRarityFilter] = useState<RarityFilter>("all");
   const [boxFilter, setBoxFilter] = useState<BoxFilter>("all");
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>(initialStatusFilter);
   const [sortOption, setSortOption] = useState<SortOption>("default");
   const [openDropdown, setOpenDropdown] = useState<OpenDropdown>(null);
 

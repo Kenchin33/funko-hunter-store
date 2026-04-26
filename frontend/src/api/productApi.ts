@@ -25,6 +25,11 @@ export async function getProductBySlug(slug: string): Promise<Product> {
   return response.data;
 }
 
+export async function getInStockProducts(): Promise<Product[]> {
+  const response = await api.get<Product[]>("/products/in_stock");
+  return response.data;
+}
+
 export async function searchProducts(query: string): Promise<Product[]> {
   const response = await api.get<Product[]>("/products/search", {
     params: { q: query },
