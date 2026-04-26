@@ -1,5 +1,5 @@
 from sqlalchemy import func, not_, or_, select, case
-from sqlalchemy.orm import Session, selectinload
+from sqlalchemy.orm import Session, selectinload, with_loader_criteria
 
 from app.models.product import Product
 from app.models.product_alias import ProductAlias
@@ -190,6 +190,35 @@ class ProductService:
                 Product.is_active.is_(True),
                 ProductVariant.is_active.is_(True),
                 ProductVariant.availability_status == "preorder",
+            )
+            .distinct()
+            .order_by(Product.created_at.desc(), Product.id.desc())
+        )
+
+        return list(db.scalars(stmt).all())
+    
+    @staticmethod
+    def get_in_stock_products(db: Session) -> list[Product]:
+        stmt = (
+            select(Product)
+            .join(ProductVariant, ProductVariant.product_id == Product.id)
+            .options(
+                selectinload(Product.images),
+                selectinload(Product.aliases),
+                selectinload(Product.variants),
+                with_loader_criteria(
+                    ProductVariant,
+                    lambda variant: (
+                        variant.is_active.is_(True)
+                        & (variant.availability_status == "in_stock")
+                    ),
+                    include_aliases=True,
+                ),
+            )
+            .where(
+                Product.is_active.is_(True),
+                ProductVariant.is_active.is_(True),
+                ProductVariant.availability_status == "in_stock",
             )
             .distinct()
             .order_by(Product.created_at.desc(), Product.id.desc())

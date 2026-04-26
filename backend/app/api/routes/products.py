@@ -30,6 +30,9 @@ def search_products(
 ):
     return ProductService.search_products(db, q)
 
+@router.get("/in-stock", response_model=list[ProductRead])
+def list_in_stock_products(db: Session = Depends(get_db)):
+    return ProductService.get_in_stock_products(db)
 
 @router.get("/{slug}", response_model=ProductRead)
 def get_product_by_slug(slug: str, db: Session = Depends(get_db)):
