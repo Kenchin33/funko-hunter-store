@@ -174,3 +174,16 @@ export async function updateAdminComplaintStatus(
   );
   return response.data;
 }
+
+export async function getAdminComplaintById(complaintId: number, token: string) {
+  const response = await api.get<AdminComplaint>(
+    `/admin/complaints/${complaintId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+}

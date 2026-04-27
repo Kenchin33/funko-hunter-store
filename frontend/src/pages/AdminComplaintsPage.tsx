@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import AdminLayout from "../components/AdminLayout";
 import {
   getAdminComplaints,
@@ -124,7 +125,12 @@ export default function AdminComplaintsPage() {
             <div key={complaint.id} className="admin-complaint-card">
               <div className="admin-complaint-top">
                 <div>
-                  <div className="admin-complaint-number">{complaint.complaint_number}</div>
+                  <Link 
+                    to={`/admin/complaints/${complaint.id}`}
+                    className="admin-complaint-number admin-complaint-number-link"
+                    >
+                      {complaint.complaint_number}
+                  </Link>
                   <div className="admin-complaint-meta">
                     {complaint.email || "Без email"} • {new Date(complaint.created_at).toLocaleString("uk-UA")}
                   </div>

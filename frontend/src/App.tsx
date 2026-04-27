@@ -20,6 +20,7 @@ import AdminProductsPage from "./pages/AdminProductsPage";
 import AdminCreateProductPage from "./pages/AdminCreateProductPage";
 import AdminEditProductPage from "./pages/AdminEditProductPage";
 import AdminComplaintsPage from "./pages/AdminComplaintsPage";
+import AdmdinComplaintDetailsPage from "./pages/AdminComplaintDetailsPage";
 
 export default function App() {
   return (
@@ -126,6 +127,14 @@ export default function App() {
           element={
             <AdminRoute>
               <AdminComplaintsPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/complaints/:complaintId"
+          element={
+            <AdminRoute>
+              <AdmdinComplaintDetailsPage />
             </AdminRoute>
           }
         />
