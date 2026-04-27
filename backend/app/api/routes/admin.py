@@ -145,6 +145,21 @@ def get_admin_complaints(
 ):
     return ComplaintService.get_all_complaints(db)
 
+@router.get("/complaints/{complaint_id}", response_model=ComplaintRead)
+def get_admin_complaint_by_id(
+    complaint_id: int,
+    db: Session = Depends(get_db),
+    current_admin: User = Depends(get_current_admin),
+):
+    complaint = ComplaintService.get_complaint_by_id(db, complaint_id)
+
+    if not complaint:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Скаргу не знайдено",
+        )
+
+    return complaint
 
 @router.patch("/complaints/{complaint_id}/status", response_model=ComplaintRead)
 def update_admin_complaint_status(
