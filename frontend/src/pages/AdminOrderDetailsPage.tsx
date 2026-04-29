@@ -11,6 +11,8 @@ function formatStatus(status: string) {
   switch (status) {
     case "new":
       return "Нове";
+    case "shipped":
+      return "Відправлено";
     case "in_progress":
       return "В обробці";
     case "resolved":

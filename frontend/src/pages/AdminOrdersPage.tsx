@@ -9,6 +9,8 @@ function formatStatus(status: string) {
   switch (status) {
     case "new":
       return "Нове";
+    case "shipped":
+      return "Відправлено";
     case "in_progress":
       return "В обробці";
     case "resolved":
@@ -26,7 +28,7 @@ export default function AdminOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  type AdminOrderFilter = "all" | "new" | "resolved" | "rejected";
+  type AdminOrderFilter = "all" | "new" | "shipped" | "resolved" | "rejected";
 
   const [statusFilter, setStatusFilter] = useState<AdminOrderFilter>("all");
 
@@ -77,6 +79,12 @@ export default function AdminOrdersPage() {
               onClick={() => setStatusFilter("new")}
             >
               Нові
+            </button>
+            <button
+              className={`admin-filter-btn ${statusFilter === "shipped" ? "active" : ""}`}
+              onClick={() => setStatusFilter("shipped")}
+            >
+              Відправлені
             </button>
             <button
               className={`admin-filter-btn ${statusFilter === "resolved" ? "active" : ""}`}
