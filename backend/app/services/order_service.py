@@ -155,7 +155,7 @@ class OrderService:
         return db.scalar(stmt)
     
     @staticmethod
-    def update_order_status(db: Session, order_number: str, new_status: str) -> Order | None:
+    def update_order_status(db: Session, order_number: str, new_status: str, tracking_number: str | None = None,) -> Order | None:
         order = db.scalar(
             select(Order)
             .options(selectinload(Order.items))
@@ -165,9 +165,14 @@ class OrderService:
         if not order:
             return None
 
-        allowed_statuses = {"new", "resolved", "rejected"}
+        allowed_statuses = {"new", "shipped", "resolved", "rejected"}
         if new_status not in allowed_statuses:
             raise ValueError("Некоректний статус")
+        
+        if new_status == "shipped":
+            if not tracking_number or not tracking_number.strip():
+                raise ValueError("Для статусу 'Відправлено' потрібно вказати трек-номер")
+            order.tracking_number = tracking_number.strip()
 
         order.status = new_status
         db.add(order)

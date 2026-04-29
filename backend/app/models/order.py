@@ -26,6 +26,7 @@ class Order(Base):
     delivery_branch: Mapped[str] = mapped_column(String(100), nullable=False)
     comment: Mapped[str | None] = mapped_column(Text, nullable=True)
     status: Mapped[str] = mapped_column(String(50), nullable=False, default="new")
+    tracking_number: Mapped[str | None] = mapped_column(String(100), nullable=True)
     total_amount: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 

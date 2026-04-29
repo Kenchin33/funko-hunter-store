@@ -44,6 +44,7 @@ class OrderRead(BaseModel):
     delivery_city: str
     delivery_branch: str
     status: str
+    tracking_number: str | None = None
     total_amount: Decimal
     created_at: datetime
     items: list[OrderItemRead]
@@ -52,3 +53,4 @@ class OrderRead(BaseModel):
 
 class OrderStatusUpdate(BaseModel):
     status: str
+    tracking_number: str | None = None
