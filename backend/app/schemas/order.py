@@ -54,3 +54,7 @@ class OrderRead(BaseModel):
 class OrderStatusUpdate(BaseModel):
     status: str
     tracking_number: str | None = None
+
+class OrderTrackRequest(BaseModel):
+    order_number: str
+    email: EmailStr

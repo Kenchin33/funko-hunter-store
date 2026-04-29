@@ -1,4 +1,5 @@
 from decimal import Decimal
+from datetime import datetime
 
 from pydantic import BaseModel, Field
 
@@ -46,3 +47,11 @@ class AssistantComplaintCreate(BaseModel):
     message: str
     photos: list[AssistantComplaintPhotoCreate] = Field(default_factory=list)
     source: str = "assistant"
+
+class AssistantOrdersStatusRead(BaseModel):
+    order_number: str
+    email: str
+    status: str
+    total_amount: Decimal
+    created_at: datetime
+    tracking_number: str | None = None

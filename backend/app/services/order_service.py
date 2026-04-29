@@ -186,3 +186,19 @@ class OrderService:
                 print("ORDER REJECT EMAIL ERROR:", exc)
 
         return order
+    
+    @staticmethod
+    def get_order_for_assistant(
+        db: Session,
+        order_number: str,
+        email: str,
+    ) -> Order | None:
+        stmt = (
+            select(Order)
+            .options(selectinload(Order.items))
+            .where(
+                Order.order_number == order_number.strip(),
+                Order.customer_email == email.strip(),
+            )
+        )
+        return db.scalar(stmt)

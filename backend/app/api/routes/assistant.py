@@ -3,12 +3,15 @@ from sqlalchemy.orm import Session
 
 from app.api.dependencies import get_db
 from app.api.dependencies_assistant import verify_assistant_api_key
-from app.schemas.assistant import AssistantProductRead
+from app.schemas.assistant import AssistantProductRead, AssistantOrdersStatusRead
 from app.services.assistant_service import AssistantService
 from app.schemas.complaint import ComplaintCreate, ComplaintRead
 from app.services.complaint_service import ComplaintService
+from app.services.order_service import OrderService
 
 router = APIRouter(prefix="/assistant", tags=["Assistant API"])
+
+
 
 
 @router.get("/products/search", response_model=list[AssistantProductRead])
@@ -58,3 +61,31 @@ def create_assistant_complaint(
     _: None = Depends(verify_assistant_api_key),
 ):
     return ComplaintService.create_complaint(db, payload)
+
+@router.get("/orders/status", response_model=AssistantOrdersStatusRead)
+def get_assistant_order_status(
+    order_number: str = Query(..., min_length=1),
+    email: str = Query(..., min_length=3),
+    db: Session = Depends(get_db),
+    _: None = Depends(verify_assistant_api_key),
+):
+    order = OrderService.get_order_for_assistant(
+        db=db,
+        order_number=order_number,
+        email=email,
+    )
+
+    if not order:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Order not found",
+        )
+
+    return {
+        "order_number": order.order_number,
+        "email": order.customer_email,
+        "status": order.status,
+        "total_amount": order.total_amount,
+        "created_at": order.created_at,
+        "tracking_number": order.tracking_number,
+    }
