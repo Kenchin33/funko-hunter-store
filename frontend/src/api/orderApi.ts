@@ -51,6 +51,7 @@ export interface OrderRead {
   delivery_city: string;
   delivery_branch: string;
   status: string;
+  tracking_number: string | null;
   total_amount: string;
   created_at: string;
   items: OrderItemRead[];

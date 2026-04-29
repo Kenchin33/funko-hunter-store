@@ -93,7 +93,16 @@ export default function OrderDetailsPage() {
                 <p className="order-details-delivery-text">
                     {order.delivery_city}, відділення {order.delivery_branch}
                 </p>
-               </div>
+              </div>
+              
+              {order.tracking_number && (
+                <div className="order-details-delivery">
+                  <h3>Трек-номер відправлення</h3>
+                  <p className="order-details-delivery-text">
+                    {order.tracking_number}
+                  </p>
+                </div>
+              )}
 
               <div className="order-details-items">
                 <h3>Товари у замовленні</h3>

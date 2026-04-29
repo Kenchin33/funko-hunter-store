@@ -30,6 +30,7 @@ export default function AdminOrderDetailsPage() {
   const [order, setOrder] = useState<OrderRead | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [trackingNumber, setTrackingNumber] = useState("");
 
   useEffect(() => {
     async function loadOrder() {
@@ -51,11 +52,21 @@ export default function AdminOrderDetailsPage() {
     loadOrder();
   }, [orderNumber, token]);
 
-  async function handleStatusChange(nextStatus: "resolved" | "rejected") {
+  async function handleStatusChange(nextStatus: "shipped" | "resolved" | "rejected") {
     if (!token || !orderNumber) return;
-  
+
+    if (nextStatus === "shipped" && !trackingNumber.trim()) {
+      showToast("Введіть трек-номер відправлення", "error");
+      return;
+    }
+
     try {
-      const updated = await updateAdminOrderStatus(orderNumber, nextStatus, token);
+      const updated = await updateAdminOrderStatus(
+        orderNumber, 
+        nextStatus, 
+        token,
+        nextStatus === "shipped" ? trackingNumber : undefined
+      );
       setOrder(updated);
       showToast(
         nextStatus === "resolved"
@@ -83,20 +94,38 @@ export default function AdminOrderDetailsPage() {
             <div>
             {order.status === "new" && (
               <div className="admin-order-actions">
+                <input
+                  type="text"
+                  value={trackingNumber}
+                  onChange={(e) => setTrackingNumber(e.target.value)}
+                  placeholder="Трек-номер відправлення"
+                  className="admin-input"
+                />
+
                 <button
-                  className="admin-complete-btn"
-                  onClick={() => handleStatusChange("resolved")}
+                  className="admin-filter-btn"
+                  onClick={() => handleStatusChange("shipped")}
                   type="button"
                 >
-                  Позначити як виконане
+                  Позначити як відправлене
                 </button>
-
                 <button
                   className="admin-cancel-btn"
                   onClick={() => handleStatusChange("rejected")}
                   type="button"
                 >
                   Скасувати замовлення
+                </button>
+              </div>
+            )}
+            {order.status === "shipped" && (
+              <div className="admin-order-actions">
+                <button
+                  className="admin-complete-btn"
+                  onClick={() => handleStatusChange("resolved")}
+                  type="button"
+                >
+                  Позначити як виконане
                 </button>
               </div>
             )}

@@ -40,7 +40,7 @@ export const CATEGORY_CONFIG = {
         "harry-potter",
         "star-wars",
         "lord-of-the-rings",
-        "sopranos",
+        "stranger-things",
       ],
     },
     games: {
@@ -68,7 +68,7 @@ export const CATEGORY_CONFIG = {
         { slug: "pixar", label: "Pixar" },
         { slug: "avatar-the-last-airbender", label: "Avatar the Last Airbender" },
         { slug: "arcane", label: "Arcane" },
-        { slug: "sponge-bob", label: "Sponge Bob" },
+        { slug: "kpop-demon-hunters", label: "KPOP Demon Hunters" },
         { slug: "other", label: "Інші" },
       ],
       knownSubcategories: [
@@ -76,7 +76,7 @@ export const CATEGORY_CONFIG = {
         "pixar",
         "avatar-the-last-airbender",
         "arcane",
-        "sponge-bob",
+        "kpop-demon-hunters",
       ],
     },
     books: {
