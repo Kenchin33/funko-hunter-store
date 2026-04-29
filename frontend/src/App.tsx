@@ -21,6 +21,7 @@ import AdminCreateProductPage from "./pages/AdminCreateProductPage";
 import AdminEditProductPage from "./pages/AdminEditProductPage";
 import AdminComplaintsPage from "./pages/AdminComplaintsPage";
 import AdmdinComplaintDetailsPage from "./pages/AdminComplaintDetailsPage";
+import TrackOrderPage from "./pages/TrackOrderPage";
 
 export default function App() {
   return (
@@ -98,6 +99,7 @@ export default function App() {
             </AdminRoute>
           }
         />
+        <Route path="/track-order" element={<TrackOrderPage />} />
         <Route
           path="/admin/products"
           element={

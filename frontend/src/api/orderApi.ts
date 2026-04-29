@@ -74,3 +74,13 @@ export async function getMyOrderByNumber(orderNumber: string, token: string) {
   });
   return response.data;
 }
+
+export interface TrackOrderPayload {
+  order_number: string;
+  email: string;
+}
+
+export async function trackOrder(payload: TrackOrderPayload) {
+  const response = await api.post<OrderRead>("/orders/track", payload);
+  return response.data;
+}
