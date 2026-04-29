@@ -127,9 +127,11 @@ export default function AdminOrdersPage() {
                   </td>
                   <td>{order.customer_email}</td>
                   <td>{order.customer_phone}</td>
-                  <span className={`profile-order-status status-${order.status}`}>
-                    {formatStatus(order.status)}
-                  </span>
+                  <td>
+                    <span className={`profile-order-status status-${order.status}`}>
+                      {formatStatus(order.status)}
+                    </span>
+                  </td>
                   <td>{order.total_amount} грн</td>
                   <td>{new Date(order.created_at).toLocaleString("uk-UA")}</td>
                 </tr>

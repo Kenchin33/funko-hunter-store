@@ -98,10 +98,15 @@ export default function AdminOrderDetailsPage() {
               <div className="admin-order-actions">
                 <input
                   type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   value={trackingNumber}
-                  onChange={(e) => setTrackingNumber(e.target.value)}
+                  onChange={(e) => {
+                    const onlyDigits = e.target.value.replace(/\D/g, "");
+                    setTrackingNumber(onlyDigits);
+                  }}
                   placeholder="Трек-номер відправлення"
-                  className="admin-input"
+                  className="admin-tracking-input"
                 />
 
                 <button

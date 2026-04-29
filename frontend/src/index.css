@@ -2999,3 +2999,31 @@ a {
     max-height: 360px;
   }
 }
+
+.admin-tracking-input {
+  height: 52px;
+  min-width: 260px;
+  padding: 0 18px;
+  border: 1px solid #d8ccff;
+  border-radius: 16px;
+  background: #ffffff;
+  color: #25005f;
+  font-size: 16px;
+  font-weight: 600;
+  outline: none;
+}
+
+.admin-tracking-input::placeholder {
+  color: #7d7191;
+  font-weight: 500;
+}
+
+.admin-tracking-input:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.12);
+}
+
+.profile-order-status.status-shipped {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
