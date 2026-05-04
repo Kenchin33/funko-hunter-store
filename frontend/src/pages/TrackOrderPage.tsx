@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
@@ -33,6 +33,8 @@ export default function TrackOrderPage() {
   const [order, setOrder] = useState<OrderRead | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const autoLoadedRef = useRef(false);
+  const [showForm, setShowForm] = useState(true);
 
   async function handleSubmit(e?: React.FormEvent) {
     e?.preventDefault();
@@ -43,13 +45,13 @@ export default function TrackOrderPage() {
     }
 
     try {
-      setLoading(true);
-      setError("");
       const data = await trackOrder({
         order_number: orderNumber.trim(),
         email: email.trim(),
       });
+
       setOrder(data);
+      setShowForm(false);
     } catch (err) {
       console.error(err);
       setOrder(null);
@@ -58,6 +60,17 @@ export default function TrackOrderPage() {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    if (autoLoadedRef.current) return;
+    if (!orderNumber || !email) return;
+
+    autoLoadedRef.current = true;
+
+    setTimeout(() => {
+      handleSubmit();
+    }, 0);
+  }, [orderNumber, email]);
 
   return (
     <div className="store-page">
@@ -68,8 +81,8 @@ export default function TrackOrderPage() {
           <div className="profile-orders-header">
             <h1>Перевірити замовлення</h1>
           </div>
-
-          <form onSubmit={handleSubmit} className="checkout-form">
+          {showForm && (
+            <form onSubmit={handleSubmit} className="checkout-form">
             <input
               value={orderNumber}
               onChange={(e) => setOrderNumber(e.target.value)}
@@ -89,6 +102,7 @@ export default function TrackOrderPage() {
               {loading ? "Перевірка..." : "Перевірити"}
             </button>
           </form>
+          )}
 
           {error && <div className="search-empty-box">{error}</div>}
 

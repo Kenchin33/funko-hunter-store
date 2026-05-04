@@ -51,6 +51,7 @@ export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const { isAuthenticated, user, logout } = useAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const cartRef = useRef<HTMLDivElement | null>(null);
   const searchRef = useRef<HTMLDivElement | null>(null);
@@ -138,12 +139,19 @@ export default function Header() {
         <Link to="/" className="store-logo">
           <img src="/logo.png" alt="Funko Hunter" className="store-logo-image" />
         </Link>
+        <button 
+          type="button"
+          className="mobile-menu-btn"
+          onClick={() => setMobileMenuOpen((prev) => !prev)}
+          aria-label="Відкрити меню">
+            ☰
+          </button>
 
-        <nav className="store-nav">
+        <nav className={`store-nav ${mobileMenuOpen ? "mobile-open" : ""}`}>
           {menuItems.map((item) => (
             <div key={item.label} className="store-nav-item">
               {"path" in item ? (
-                <Link to={item.path} className="store-nav-link">
+                <Link to={item.path} className="store-nav-link" onClick={() => setMobileMenuOpen(false)}>
                   {item.label}
                 </Link>
               ) : (
@@ -151,6 +159,7 @@ export default function Header() {
                   <Link
                     to={`/catalog/${item.categoryKey}`}
                     className="store-nav-link"
+                    onClick={() => setMobileMenuOpen(false)}
                   >
                     {item.label}
                   </Link>
@@ -161,6 +170,7 @@ export default function Header() {
                         key={sub.slug}
                         to={`/catalog/${item.categoryKey}/${sub.slug}`}
                         className="store-submenu-link"
+                        onClick={() => setMobileMenuOpen(false)}
                       >
                         {sub.label}
                       </Link>
