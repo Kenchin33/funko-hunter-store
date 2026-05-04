@@ -139,13 +139,6 @@ export default function Header() {
         <Link to="/" className="store-logo">
           <img src="/logo.png" alt="Funko Hunter" className="store-logo-image" />
         </Link>
-        <button 
-          type="button"
-          className="mobile-menu-btn"
-          onClick={() => setMobileMenuOpen((prev) => !prev)}
-          aria-label="Відкрити меню">
-            ☰
-          </button>
 
         <nav className={`store-nav ${mobileMenuOpen ? "mobile-open" : ""}`}>
           {menuItems.map((item) => (
@@ -247,6 +240,14 @@ export default function Header() {
               </div>
             )}
           </div>
+
+          <button 
+            type="button"
+            className="mobile-menu-btn"
+            onClick={() => setMobileMenuOpen((prev) => !prev)}
+            aria-label="Відкрити меню">
+              ☰
+          </button>
 
           <div className="store-cart-wrap" ref={cartRef}>
             <button
