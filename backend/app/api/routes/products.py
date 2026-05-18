@@ -34,6 +34,13 @@ def search_products(
 def list_in_stock_products(db: Session = Depends(get_db)):
     return ProductService.get_in_stock_products(db)
 
+@router.get("/popular")
+def list_popular_products(
+    limit: int = Query(default=5, ge=1, le=20),
+    db: Session = Depends(get_db),
+):
+    return ProductService.get_popular_products(db, limit=limit)
+
 @router.get("/{slug}", response_model=ProductRead)
 def get_product_by_slug(slug: str, db: Session = Depends(get_db)):
     product = ProductService.get_by_variant_slug(db, slug)

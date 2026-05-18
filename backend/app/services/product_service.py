@@ -4,6 +4,8 @@ from sqlalchemy.orm import Session, selectinload, with_loader_criteria
 from app.models.product import Product
 from app.models.product_alias import ProductAlias
 from app.models.product_variant import ProductVariant
+from app.models.order import Order
+from app.models.order_item import OrderItem
 
 
 class ProductService:
@@ -225,3 +227,46 @@ class ProductService:
         )
 
         return list(db.scalars(stmt).all())
+    
+    @staticmethod
+    def get_popular_products(db: Session, limit: int = 5) -> list[dict]:
+        sold_quantity = func.coalesce(func.sum(OrderItem.quantity), 0).label("sold_quantity")
+
+        stmt = (
+            select(Product, sold_quantity)
+            .join(OrderItem, OrderItem.product_id == Product.id)
+            .join(Order, Order.id == OrderItem.order_id)
+            .options(
+                selectinload(Product.images),
+                selectinload(Product.aliases),
+                selectinload(Product.variants),
+            )
+            .where(
+                Product.is_active.is_(True),
+                Order.status.in_(["shipped", "resolved"]),
+            )
+            .group_by(Product.id)
+            .order_by(sold_quantity.desc(), Product.id.desc())
+            .limit(limit)
+        )
+
+        rows = db.execute(stmt).all()
+
+        return [
+            {
+                "id": product.id,
+                "name": product.name,
+                "slug": product.slug,
+                "category": product.category,
+                "subcategory": product.subcategory,
+                "series": product.series,
+                "product_number": product.product_number,
+                "short_description": product.short_description,
+                "rarity": product.rarity,
+                "sold_quantity": int(sold_count or 0),
+                "images": product.images,
+                "aliases": product.aliases,
+                "variants": product.variants,
+            }
+            for product, sold_count in rows
+        ]

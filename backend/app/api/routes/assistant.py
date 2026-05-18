@@ -89,3 +89,10 @@ def get_assistant_order_status(
         "created_at": order.created_at,
         "tracking_number": order.tracking_number,
     }
+
+@router.get("/products/popular")
+def get_popular_products(
+    limit: int = Query(default=5, ge=1, le=20),
+    db: Session = Depends(get_db),
+):
+    return ProductService.get_popular_products(db, limit=limit)
