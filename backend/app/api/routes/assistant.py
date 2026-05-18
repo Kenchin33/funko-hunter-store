@@ -8,6 +8,7 @@ from app.services.assistant_service import AssistantService
 from app.schemas.complaint import ComplaintCreate, ComplaintRead
 from app.services.complaint_service import ComplaintService
 from app.services.order_service import OrderService
+from app.services.product_service import ProductService
 
 router = APIRouter(prefix="/assistant", tags=["Assistant API"])
 
