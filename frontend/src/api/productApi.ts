@@ -15,6 +15,14 @@ export async function getNewProducts(): Promise<Product[]> {
   return response.data;
 }
 
+export async function getPopularProducts(limit = 4): Promise<Product[]> {
+  const response = await api.get<Product[]>("/products/popular", {
+    params: { limit },
+  });
+
+  return response.data;
+}
+
 export async function getPreorderProducts(): Promise<Product[]> {
   const response = await api.get<Product[]>("/products/preorder");
   return response.data;

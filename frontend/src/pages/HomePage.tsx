@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAllProducts, getNewProducts } from "../api/productApi";
+import { getNewProducts, getPopularProducts } from "../api/productApi";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import HomeBanner from "../components/HomeBanner";
@@ -15,15 +15,15 @@ export default function HomePage() {
   useEffect(() => {
     async function loadData() {
       try {
-        const [allData, newData] = await Promise.all([
-          getAllProducts(),
+        const [popularData, newData] = await Promise.all([
+          getPopularProducts(4),
           getNewProducts(),
         ]);
 
-        const allItems = mapProductsToCardItems(allData);
+        const popularItems = mapProductsToCardItems(popularData);
         const newItems = mapProductsToCardItems(newData);
 
-        setProducts(allItems.slice(0, 4));
+        setProducts(popularItems);
         setNewProducts(newItems.slice(0, 4));
       } catch (error) {
         console.error("Failed to load products:", error);
